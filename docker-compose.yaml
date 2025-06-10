@@ -1,0 +1,25 @@
+services:
+  postgres:
+    image: postgres:latest
+    # container_name: dev_postgres
+    restart: unless-stopped
+    environment:
+      POSTGRES_DB: ${POSTGRES_DB}
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+      PGDATA: /var/lib/postgresql/data/pgdata
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+      - ./init-scripts:/docker-entrypoint-initdb.d
+    networks:
+      - dev_network
+
+
+volumes:
+  postgres_data:
+
+networks:
+  dev_network:
+    driver: bridge
