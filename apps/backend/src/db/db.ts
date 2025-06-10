@@ -1,4 +1,4 @@
-import { Pool, PoolClient, QueryResult } from 'pg';
+import { Pool, PoolClient, QueryResult, QueryResultRow } from 'pg';
 
 export interface DatabaseConfig {
   host: string;
@@ -6,15 +6,15 @@ export interface DatabaseConfig {
   database: string;
   user: string;
   password: string;
-  max?: number; // nombre max de connexions
+  max?: number; // max number of connections
   idleTimeoutMillis?: number;
   connectionTimeoutMillis?: number;
 }
 
-// Pool global
+// Global pool
 let pool: Pool | null = null;
 
-// Initialiser la connexion
+// Initialize the connection
 export function initDatabase(config: DatabaseConfig): void {
   pool = new Pool({
     host: config.host,
@@ -27,22 +27,22 @@ export function initDatabase(config: DatabaseConfig): void {
     connectionTimeoutMillis: config.connectionTimeoutMillis || 2000,
   });
 
-  // Gestion des erreurs du pool
+  // Handle pool errors
   pool.on('error', (err) => {
-    console.error('Erreur de connexion PostgreSQL:', err);
+    console.error('PostgreSQL connection error:', err);
   });
 }
 
-// Obtenir le pool (avec vérification)
+// Get the pool (with check)
 function getPool(): Pool {
   if (!pool) {
-    throw new Error('Database non initialisée. Appelez initDatabase() d\'abord.');
+    throw new Error('Database not initialized. Call initDatabase() first.');
   }
   return pool;
 }
 
-// Exécuter une requête simple
-export async function query<T = any>(text: string, params?: any[]): Promise<QueryResult<T>> {
+// Execute a simple query
+export async function query<T extends QueryResultRow = any>(text: string, params?: any[]): Promise<QueryResult<T>> {
   const client = await getPool().connect();
   try {
     const result = await client.query(text, params);
@@ -52,19 +52,19 @@ export async function query<T = any>(text: string, params?: any[]): Promise<Quer
   }
 }
 
-// Exécuter une requête et retourner seulement les rows
-export async function queryRows<T = any>(text: string, params?: any[]): Promise<T[]> {
+// Execute a query and return only rows
+export async function queryRows<T extends QueryResultRow = any>(text: string, params?: any[]): Promise<T[]> {
   const result = await query<T>(text, params);
   return result.rows;
 }
 
-// Exécuter une requête et retourner la première ligne
-export async function queryOne<T = any>(text: string, params?: any[]): Promise<T | null> {
+// Execute a query and return the first row
+export async function queryOne<T extends QueryResultRow = any>(text: string, params?: any[]): Promise<T | null> {
   const result = await query<T>(text, params);
   return result.rows[0] || null;
 }
 
-// Transaction
+// Transaction helper
 export async function transaction<T>(callback: (client: PoolClient) => Promise<T>): Promise<T> {
   const client = await getPool().connect();
   try {
@@ -80,7 +80,7 @@ export async function transaction<T>(callback: (client: PoolClient) => Promise<T
   }
 }
 
-// Insérer et retourner l'ID
+// Insert and return the ID
 export async function insert(table: string, data: Record<string, any>): Promise<number> {
   const keys = Object.keys(data);
   const values = Object.values(data);
@@ -96,7 +96,7 @@ export async function insert(table: string, data: Record<string, any>): Promise<
   return result?.id || 0;
 }
 
-// Mettre à jour
+// Update records
 export async function update(table: string, data: Record<string, any>, where: Record<string, any>): Promise<number> {
   const setClause = Object.keys(data).map((key, i) => `${key} = $${i + 1}`).join(', ');
   const whereClause = Object.keys(where).map((key, i) => `${key} = $${i + 1 + Object.keys(data).length}`).join(' AND ');
@@ -108,7 +108,7 @@ export async function update(table: string, data: Record<string, any>, where: Re
   return result.rowCount || 0;
 }
 
-// Supprimer
+// Delete records
 export async function deleteFrom(table: string, where: Record<string, any>): Promise<number> {
   const whereClause = Object.keys(where).map((key, i) => `${key} = $${i + 1}`).join(' AND ');
   const queryText = `DELETE FROM ${table} WHERE ${whereClause}`;
@@ -117,8 +117,8 @@ export async function deleteFrom(table: string, where: Record<string, any>): Pro
   return result.rowCount || 0;
 }
 
-// Sélectionner avec conditions
-export async function select<T = any>(
+// Select with conditions
+export async function select<T extends QueryResultRow = any>(
   table: string, 
   columns: string[] = ['*'], 
   where?: Record<string, any>,
@@ -145,7 +145,7 @@ export async function select<T = any>(
   return queryRows<T>(queryText, values);
 }
 
-// Compter les enregistrements
+// Count records
 export async function count(table: string, where?: Record<string, any>): Promise<number> {
   let queryText = `SELECT COUNT(*) as count FROM ${table}`;
   const values: any[] = [];
@@ -160,13 +160,13 @@ export async function count(table: string, where?: Record<string, any>): Promise
   return parseInt(result?.count || '0');
 }
 
-// Vérifier si un enregistrement existe
+// Check if a record exists
 export async function exists(table: string, where: Record<string, any>): Promise<boolean> {
   const recordCount = await count(table, where);
   return recordCount > 0;
 }
 
-// Fermer toutes les connexions
+// Close all connections
 export async function close(): Promise<void> {
   if (pool) {
     await pool.end();
@@ -174,18 +174,18 @@ export async function close(): Promise<void> {
   }
 }
 
-// Tester la connexion
+// Test database connection
 export async function testConnection(): Promise<boolean> {
   try {
     await query('SELECT NOW()');
     return true;
   } catch (error) {
-    console.error('Test de connexion échoué:', error);
+    console.error('Connection test failed:', error);
     return false;
   }
 }
 
-// Configuration par défaut pour le dev local
+// Default config for local dev
 export const defaultConfig: DatabaseConfig = {
   host: 'localhost',
   port: 5432,
@@ -194,5 +194,5 @@ export const defaultConfig: DatabaseConfig = {
   password: process.env.POSTGRES_PASSWORD ?? 'devpassword',
 };
 
-// Auto-initialisation avec config par défaut (optionnel)
+// Optional auto-init
 initDatabase(defaultConfig);

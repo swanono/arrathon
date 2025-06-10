@@ -7,7 +7,9 @@ CREATE TABLE IF NOT EXISTS users (
     id SERIAL PRIMARY KEY,
     name VARCHAR(100) NOT NULL,
     family_name VARCHAR(100) NOT NULL,
-    username VARCHAR(50) UNIQUE NOT NULL,
+    email VARCHAR(255) UNIQUE,
+    google_id VARCHAR(255) UNIQUE,
+    avatar_url TEXT,
     date_of_birth DATE,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
@@ -69,10 +71,11 @@ CREATE TABLE IF NOT EXISTS arrathon_location (
 -- ============================================
 
 -- Indexes on frequently searched columns
-CREATE INDEX IF NOT EXISTS idx_users_username ON users(username);
 CREATE INDEX IF NOT EXISTS idx_users_family_name ON users(family_name);
 CREATE INDEX IF NOT EXISTS idx_arrathons_date ON arrathons(date);
 CREATE INDEX IF NOT EXISTS idx_locations_name ON locations(name);
+CREATE INDEX idx_users_email ON users(email);
+CREATE INDEX idx_users_google_id ON users(google_id);
 
 -- Indexes on foreign keys for joins
 CREATE INDEX IF NOT EXISTS idx_user_arrathon_user_id ON user_arrathon(user_id);
@@ -86,16 +89,16 @@ CREATE INDEX IF NOT EXISTS idx_arrathon_location_order ON arrathon_location(arra
 CREATE INDEX IF NOT EXISTS idx_users_name_family ON users(name, family_name);
 
 -- ============================================
--- TEST DATA (OPTIONAL)
+-- TEST DATA
 -- ============================================
 
 -- Test users
-INSERT INTO users (name, family_name, username, date_of_birth) VALUES
-('Jean', 'Dupont', 'jean.dupont', '1990-05-15'),
-('Marie', 'Martin', 'marie.martin', '1985-08-22'),
-('Pierre', 'Durand', 'pierre.durand', '1992-03-10'),
-('Sophie', 'Bernard', 'sophie.bernard', '1988-11-07')
-ON CONFLICT (username) DO NOTHING;
+INSERT INTO users (name, family_name, email, date_of_birth) VALUES
+('Jean', 'Dupont', 'jean.dupont@gmail.com', '1990-05-15'),
+('Marie', 'Martin', 'marie.martin@gmail.com', '1985-08-22'),
+('Pierre', 'Durand', 'pierre.durand@gmail.com', '1992-03-10'),
+('Sophie', 'Bernard', 'sophie.bernard@gmail.com', '1988-11-07')
+ON CONFLICT (email) DO NOTHING;
 
 -- Test locations
 INSERT INTO locations (name, address, metadata) VALUES
