@@ -1,5 +1,5 @@
 import { FastifyPluginAsync, FastifyRequest } from 'fastify'
-import { getUserById, updateUser } from '../services/user.js'
+import { getUserById, updateUser } from '../../services/user.js'
 
 type AuthenticatedRequest = {
   user: {

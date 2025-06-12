@@ -38,9 +38,14 @@ const app: FastifyPluginAsync<AppOptions> = async (
   void fastify.register(AutoLoad, {
     dir: path.join(__dirname, 'routes'),
     options: opts,
-    prefix: '/api',
     forceESM: true
   })
+
+  fastify.ready(err => {
+    if (err) throw err
+    console.log(fastify.printRoutes())
+  })
+  // void fastify.get('/favicon.ico', {})
 }
 
 export default app

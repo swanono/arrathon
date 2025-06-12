@@ -23,7 +23,7 @@ export type User = {
 
 export async function findUserByEmail(email: string): Promise<User | null> {
   const query = `
-      SELECT id, name, family_name, username, email, google_id, avatar_url
+      SELECT id, name, family_name, email, google_id, avatar_url
       FROM users
       WHERE email = $1
       LIMIT 1
@@ -47,7 +47,7 @@ export async function createUser(userData: {
 
 export async function getUserById(id: number) {
   const query = `
-    SELECT id, name, family_name, username, email, google_id, avatar_url
+    SELECT id, name, family_name, email, google_id, avatar_url
     FROM users
     WHERE id = $1
     LIMIT 1
@@ -68,7 +68,7 @@ export async function updateUser(id: number, updates: Partial<{ name: string; fa
     UPDATE users
     SET ${setClause}
     WHERE id = $1
-    RETURNING id, name, family_name, username, email, google_id, avatar_url, date_of_birth, created_at, updated_at
+    RETURNING id, name, family_name, email, google_id, avatar_url, date_of_birth, created_at, updated_at
   `
 
   const updatedUser = await queryOne(query, values)

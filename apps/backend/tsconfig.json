@@ -1,16 +1,39 @@
 {
-  "extends": "fastify-tsconfig",
   "compilerOptions": {
-    "declaration": true,
-    "composite": true,
-    "declarationMap": true,
+    "removeComments": true,
+    "newLine": "lf",
+    "noUnusedLocals": true,
+    "noFallthroughCasesInSwitch": true,
+    "forceConsistentCasingInFileNames": true,
+    // "lib": [
+    //   "ESNext"
+    // ],
+    /* Base Options: */
+    "skipLibCheck": true,
+    "target": "es2022",
+    "esModuleInterop": true,
+    "allowJs": true,
+    // "resolveJsonModule": true,
+    "moduleDetection": "force",
+    "isolatedModules": true,
+    "strict": true,
+    "noUncheckedIndexedAccess": true,
+    "moduleResolution": "nodenext",
+    "module": "nodenext",
+
+    // "noEmit": true,
+
+    /* If your code runs in the DOM: */
+    "lib": ["es2022", "dom", "dom.iterable"],
+
+    // "composite": true,
+    // "declarationMap": true,
     "outDir": "dist",
     "rootDir": "./src", 
-    "sourceMap": true,
-    "moduleResolution": "NodeNext",
-    "module": "NodeNext",
-    "target": "ES2022",
-    "esModuleInterop": true
+    // "sourceMap": true,
+    // "target": "esnext",
+    // "moduleResolution": "bundler",
+    // "esModuleInterop": true
   },
   "include": ["src/**/*.ts"]
 }

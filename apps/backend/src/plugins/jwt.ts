@@ -45,7 +45,7 @@ const jwtPlugin: FastifyPluginAsync = async (fastify) => {
     if (needsAuth) {
       try {
         const token = request.headers.authorization?.replace('Bearer ', '')
-        
+
         if (!token) {
           return reply.status(401).send({ 
             error: 'Token manquant',
@@ -55,8 +55,9 @@ const jwtPlugin: FastifyPluginAsync = async (fastify) => {
         
         const decoded = await request.jwtVerify()
         request.user = decoded
-        
+        console.log({token, decoded})
       } catch (err) {
+        console.log({err})
         return reply.status(401).send({ 
           error: 'Token invalide ou expiré',
           code: 'INVALID_TOKEN' 

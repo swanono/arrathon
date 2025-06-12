@@ -1,19 +1,12 @@
 import { FastifyPluginAsync } from 'fastify'
-import { validateGoogleUserData } from '../../services/auth.js'
-import { createUser, findUserByEmail, getUserById } from '../../services/user.js'
+import { validateGoogleUserData } from '../../../services/auth.js'
+import { createUser, findUserByEmail, getUserById } from '../../../services/user.js'
 
 const authRoutes: FastifyPluginAsync = async (fastify, opts): Promise<void> => {
-
-  // 1. Start Google OAuth
-  fastify.get('/google', async function (request, reply) {
-    return this.googleOAuth2.getAccessTokenFromAuthorizationCodeFlow(request)
-  })
-
-  // 2. OAuth callback - returns JWT in JSON
   fastify.get('/google/callback', async function (request, reply) {
     try {
+      console.log('CCCC')
       const { token } = await this.googleOAuth2.getAccessTokenFromAuthorizationCodeFlow(request)
-
       // Get user info from Google
       const userResponse = await fetch('https://www.googleapis.com/oauth2/v2/userinfo', {
         headers: { 'Authorization': `Bearer ${token.access_token}` }
@@ -65,6 +58,13 @@ const authRoutes: FastifyPluginAsync = async (fastify, opts): Promise<void> => {
       })
     }
   })
+  // 1. Start Google OAuth
+  fastify.get('/google/', async function (request, reply) {
+    return this.googleOAuth2.getAccessTokenFromAuthorizationCodeFlow(request)
+  })
+
+  // 2. OAuth callback - returns JWT in JSON
+ 
 
   // 3. Refresh token endpoint
   fastify.post('/refresh', async function (request, reply) {
