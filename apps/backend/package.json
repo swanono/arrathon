@@ -23,12 +23,12 @@
     "@fastify/jwt": "^9.1.0",
     "@fastify/oauth2": "^8.1.2",
     "@fastify/sensible": "^6.0.0",
-    "@sinclair/typebox": "^0.34.35",
     "fastify": "^5.0.0",
     "fastify-cli": "^7.4.0",
     "fastify-plugin": "^5.0.0",
     "invariant": "^2.2.4",
-    "pg": "^8.16.0"
+    "pg": "^8.16.0",
+    "zod": "^3.25.67"
   },
   "devDependencies": {
     "@types/invariant": "^2.2.37",
