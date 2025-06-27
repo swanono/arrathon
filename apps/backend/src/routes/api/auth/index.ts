@@ -5,7 +5,6 @@ import { createUser, findUserByEmail, getUserById } from '../../../services/user
 const authRoutes: FastifyPluginAsync = async (fastify, opts): Promise<void> => {
   fastify.get('/google/callback', async function (request, reply) {
     try {
-      console.log('CCCC')
       const { token } = await this.googleOAuth2.getAccessTokenFromAuthorizationCodeFlow(request)
       // Get user info from Google
       const userResponse = await fetch('https://www.googleapis.com/oauth2/v2/userinfo', {

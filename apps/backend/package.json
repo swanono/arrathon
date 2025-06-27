@@ -23,6 +23,7 @@
     "@fastify/jwt": "^9.1.0",
     "@fastify/oauth2": "^8.1.2",
     "@fastify/sensible": "^6.0.0",
+    "@sinclair/typebox": "^0.34.35",
     "fastify": "^5.0.0",
     "fastify-cli": "^7.4.0",
     "fastify-plugin": "^5.0.0",

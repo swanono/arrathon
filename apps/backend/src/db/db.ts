@@ -81,21 +81,29 @@ export async function transaction<T>(callback: (client: PoolClient) => Promise<T
 }
 
 // Insert and return the ID
-export async function insert(table: string, data: Record<string, any>): Promise<number> {
-  const keys = Object.keys(data);
-  const values = Object.values(data);
-  const placeholders = keys.map((_, i) => `$${i + 1}`).join(', ');
-  
-  const queryText = `
-    INSERT INTO ${table} (${keys.join(', ')}) 
-    VALUES (${placeholders}) 
-    RETURNING id
-  `;
-  
-  const result = await queryOne<{ id: number }>(queryText, values);
-  return result?.id || 0;
-}
+export async function insert(
+  table: string,
+  data: Record<string, any>,
+  client?: PoolClient
+): Promise<number> {
+  const keys = Object.keys(data)
+  const values = Object.values(data)
+  const placeholders = keys.map((_, i) => `$${i + 1}`).join(', ')
 
+  const queryText = `
+    INSERT INTO ${table} (${keys.join(', ')})
+    VALUES (${placeholders})
+    RETURNING id
+  `
+
+  if (client) { // useful for transaction
+    const result = await client.query<{ id: number }>(queryText, values)
+    return result.rows[0]?.id || 0
+  } else {
+    const result = await queryOne<{ id: number }>(queryText, values)
+    return result?.id || 0
+  }
+}
 // Update records
 export async function update(table: string, data: Record<string, any>, where: Record<string, any>): Promise<number> {
   const setClause = Object.keys(data).map((key, i) => `${key} = $${i + 1}`).join(', ');
