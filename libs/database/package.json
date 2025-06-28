@@ -1,0 +1,31 @@
+{
+  "$schema": "https://www.schemastore.org/package.json",
+  "name": "@lib/database",
+  "version": "0.0.0",
+  "type": "module",
+  "main": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "import": "./dist/index.js",
+      "types": "./dist/index.d.ts"
+    }
+  },
+  "files": ["dist/**"],
+  "scripts": {
+    "build": "tsup",
+    "dev": "tsup --watch",
+    "lint": "",
+    "format": "",
+    "test": "",
+    "type-check": ""
+  },
+  "dependencies": {
+    "zod": "^3.25.64"
+  },
+  "devDependencies": {
+    "@resource/configs": "workspace:*",
+    "tsup": "^8.5.0",
+    "typescript": "^5.8.3"
+  }
+}
