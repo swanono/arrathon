@@ -1,6 +1,6 @@
 {
   "$schema": "https://www.schemastore.org/package.json",
-  "name": "@lib/database",
+  "name": "@resource/environment-variables",
   "version": "0.0.0",
   "type": "module",
   "main": "./dist/index.js",
@@ -11,9 +11,7 @@
       "types": "./dist/index.d.ts"
     }
   },
-  "files": [
-    "dist/**"
-  ],
+  "files": ["dist/**"],
   "scripts": {
     "build": "tsup",
     "dev": "tsup --watch",
@@ -23,14 +21,12 @@
     "type-check": ""
   },
   "dependencies": {
-    "@resource/environment-variables": "workspace:*",
-    "@resource/errors": "workspace:*",
-    "pg": "^8.16.0",
-    "zod": "^3.25.64"
+    "zod": "^3.25.64",
+    "@resource/errors": "workspace:*"
   },
   "devDependencies": {
     "@resource/configs": "workspace:*",
-    "@types/pg": "^8.15.4",
+    "@types/node": "^22.1.0",
     "tsup": "^8.5.0",
     "typescript": "^5.8.3"
   }
