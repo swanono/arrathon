@@ -78,6 +78,15 @@ importers:
 
   libs/database:
     dependencies:
+      '@resource/environment-variables':
+        specifier: workspace:*
+        version: link:../../resources/environment-variables
+      '@resource/errors':
+        specifier: workspace:*
+        version: link:../../resources/errors
+      pg:
+        specifier: ^8.16.0
+        version: 8.16.0
       zod:
         specifier: ^3.25.64
         version: 3.25.67
@@ -85,6 +94,9 @@ importers:
       '@resource/configs':
         specifier: workspace:*
         version: link:../../resources/configs
+      '@types/pg':
+        specifier: ^8.15.4
+        version: 8.15.4
       tsup:
         specifier: ^8.5.0
         version: 8.5.0(typescript@5.8.3)
@@ -128,9 +140,59 @@ importers:
         specifier: ^8.33.0
         version: 8.33.0(eslint@9.28.0)(typescript@5.8.2)
 
+  libs/lib-template:
+    devDependencies:
+      '@resource/configs':
+        specifier: workspace:*
+        version: link:../../resources/configs
+      tsup:
+        specifier: ^8.5.0
+        version: 8.5.0(typescript@5.8.3)
+      typescript:
+        specifier: ^5.8.3
+        version: 5.8.3
+
   libs/typescript-config: {}
 
   resources/configs: {}
+
+  resources/environment-variables:
+    dependencies:
+      '@resource/errors':
+        specifier: workspace:*
+        version: link:../errors
+      zod:
+        specifier: ^3.25.64
+        version: 3.25.67
+    devDependencies:
+      '@resource/configs':
+        specifier: workspace:*
+        version: link:../configs
+      '@types/node':
+        specifier: ^22.1.0
+        version: 22.15.3
+      tsup:
+        specifier: ^8.5.0
+        version: 8.5.0(typescript@5.8.3)
+      typescript:
+        specifier: ^5.8.3
+        version: 5.8.3
+
+  resources/errors:
+    dependencies:
+      zod:
+        specifier: ^3.25.67
+        version: 3.25.67
+    devDependencies:
+      '@resource/configs':
+        specifier: workspace:*
+        version: link:../configs
+      tsup:
+        specifier: ^8.5.0
+        version: 8.5.0(typescript@5.8.3)
+      typescript:
+        specifier: ^5.8.3
+        version: 5.8.3
 
 packages:
 
