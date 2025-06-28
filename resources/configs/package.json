@@ -1,6 +1,6 @@
 {
   "$schema": "https://www.schemastore.org/package.json",
-  "name": "@resources/configs",
+  "name": "@resource/configs",
   "version": "0.0.0",
   "description": "store all config files",
   "files": ["tsconfig/**"],
