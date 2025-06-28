@@ -1,0 +1,10 @@
+{
+  "$schema": "https://www.schemastore.org/package.json",
+  "name": "@resources/configs",
+  "version": "0.0.0",
+  "description": "store all config files",
+  "files": ["tsconfig/**"],
+  "keywords": ["config", "typescript", "tsconfig"],
+  "author": "benjamin.pasco",
+  "license": "MIT"
+}
