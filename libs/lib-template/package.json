@@ -1,0 +1,29 @@
+{
+  "$schema": "https://www.schemastore.org/package.json",
+  "name": "@lib/lib-template",
+  "version": "0.0.0",
+  "type": "module",
+  "main": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "import": "./dist/index.js",
+      "types": "./dist/index.d.ts"
+    }
+  },
+  "files": ["dist/**"],
+  "scripts": {
+    "build": "tsup",
+    "dev": "tsup --watch",
+    "lint": "",
+    "format": "",
+    "test": "",
+    "type-check": ""
+  },
+  "dependencies": {},
+  "devDependencies": {
+    "@resource/configs": "workspace:*",
+    "tsup": "^8.5.0",
+    "typescript": "^5.8.3"
+  }
+}
