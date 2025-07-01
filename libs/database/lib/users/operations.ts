@@ -63,15 +63,14 @@ export async function createUser({
 
 function formatQueryString(record: { [key: string]: unknown }) {
   const values: unknown[] = [];
-  return Object.entries(record).reduce(
-    (previous, current, index) => {
-      return {
-        str: `${previous.str} ${current[0]} = $${index + 2},`,
-        values: [...previous.values, current[1]],
-      };
-    },
-    { str: "", values },
-  );
+  let valuesString = "";
+  let index = 0;
+  for (const [key, value] of Object.entries(record)) {
+    valuesString = `${valuesString} ${key} = $${index + 2},`;
+    values.push(value);
+    index++;
+  }
+  return { valuesString, values };
 }
 
 export async function updateUser(
@@ -86,13 +85,13 @@ export async function updateUser(
     date_of_birth?: string;
   },
 ) {
-  const { str, values } = formatQueryString({
+  const { valuesString, values } = formatQueryString({
     name,
     family_name,
     date_of_birth,
   });
   try {
-    const updateUserQueryString = updateUserByIdQuery(str);
+    const updateUserQueryString = updateUserByIdQuery(valuesString);
     const queryResult = pool.query(updateUserQueryString, [id, ...values]);
     return userSchema.parse(queryResult);
   } catch {

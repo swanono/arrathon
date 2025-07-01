@@ -11,14 +11,16 @@
       "types": "./dist/index.d.ts"
     }
   },
-  "files": ["dist/**"],
+  "files": [
+    "dist/**"
+  ],
   "scripts": {
     "build": "tsup",
     "dev": "tsup --watch",
-    "lint": "eslint .",
+    "lint:check": "eslint .",
     "lint:fix": "eslint . --fix",
-    "format": "prettier . --write",
     "format:check": "prettier . --check",
+    "format:fix": "prettier . --write",
     "test": "",
     "type:check": "tsc --noEmit"
   },
