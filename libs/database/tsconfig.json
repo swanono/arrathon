@@ -1,11 +1,6 @@
 {
   "$schema": "https://json.schemastore.org/tsconfig",
   "extends": "@resource/configs/tsconfig/lib.json",
-  "include": [
-    "**/*.ts"
-  ],
-  "exclude": [
-    "dist",
-    "node_modules"
-  ]
+  "include": ["**/*.ts"],
+  "exclude": ["dist", "node_modules"]
 }
