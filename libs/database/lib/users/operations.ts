@@ -3,8 +3,8 @@ import {
   getUserByEmailQuery,
   getUserByIdQuery,
   updateUserByIdQuery,
-} from "./sqlQueries.js";
-import { pool } from "../db.js";
+} from "./sql-queries.js";
+import { pool } from "../database.js";
 import { userSchema } from "./schemas.js";
 import {
   GetUserByEmailQueryError,
@@ -64,10 +64,10 @@ export async function createUser({
 function formatQueryString(record: { [key: string]: unknown }) {
   const values: unknown[] = [];
   return Object.entries(record).reduce(
-    (prev, current, index) => {
+    (previous, current, index) => {
       return {
-        str: `${prev.str} ${current[0]} = $${index + 2},`,
-        values: [...prev.values, current[1]],
+        str: `${previous.str} ${current[0]} = $${index + 2},`,
+        values: [...previous.values, current[1]],
       };
     },
     { str: "", values },
