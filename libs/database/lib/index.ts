@@ -1,1 +1,2 @@
-export * from "./users/sqlQueries.js";
+export * from "./users/sql-queries.js";
+export * from "./users/operations.js";
