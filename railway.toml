@@ -1,9 +1,9 @@
 [build]
 builder = "nixpacks"
-buildCommand = "pnpm install --frozen-lockfile && pnpm --filter @arrathon/db db:migrate && pnpm --filter @arrathon/api build"
+buildCommand = "pnpm install --frozen-lockfile && pnpm --filter @arrathon/api build"
 
 [deploy]
-startCommand = "node apps/api/dist/index.js"
+startCommand = "pnpm --filter @arrathon/db db:migrate && node apps/api/dist/index.js"
 healthcheckPath = "/health"
 healthcheckTimeout = 30
 restartPolicyType = "on_failure"
