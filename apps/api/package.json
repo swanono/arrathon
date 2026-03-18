@@ -11,6 +11,8 @@
   },
   "dependencies": {
     "@arrathon/db": "workspace:*",
+    "arctic": "^3.7.0",
+    "drizzle-orm": "^0.45.1",
     "@hono/node-server": "^1.13.7",
     "@hono/zod-validator": "^0.4.3",
     "dotenv": "^16.4.5",
