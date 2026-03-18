@@ -12,11 +12,16 @@ function getGoogleClient(): Google {
   )
 }
 
-export function createGoogleAuthUrl(): { url: URL; state: string; codeVerifier: string } {
-  const state = generateState()
+export function createGoogleAuthUrl(platform: string = 'web'): { url: URL; encodedState: string; codeVerifier: string } {
+  const rawState = generateState()
   const codeVerifier = generateCodeVerifier()
-  const url = getGoogleClient().createAuthorizationURL(state, codeVerifier, ['openid', 'profile', 'email'])
-  return { url, state, codeVerifier }
+  const encodedState = Buffer.from(JSON.stringify({ s: rawState, p: platform })).toString('base64url')
+  const url = getGoogleClient().createAuthorizationURL(encodedState, codeVerifier, ['openid', 'profile', 'email'])
+  return { url, encodedState, codeVerifier }
+}
+
+export function decodeOAuthState(encodedState: string): { s: string; p: string } {
+  return JSON.parse(Buffer.from(encodedState, 'base64url').toString())
 }
 
 export async function handleGoogleCallback(

@@ -1,6 +1,26 @@
 import { palette, spacing, typography, borderRadius, shadows } from './tokens'
 
-export const lightTheme = {
+export type AppTheme = {
+  colors: {
+    primary: string
+    primaryDark: string
+    background: string
+    surface: string
+    surfaceElevated: string
+    navy: string
+    navyMuted: string
+    border: string
+    error: string
+    success: string
+    white: string
+  }
+  spacing: typeof spacing
+  typography: typeof typography
+  borderRadius: typeof borderRadius
+  shadows: typeof shadows
+}
+
+export const lightTheme: AppTheme = {
   colors: {
     primary: palette.green[500],
     primaryDark: palette.green[700],
@@ -18,9 +38,9 @@ export const lightTheme = {
   typography,
   borderRadius,
   shadows,
-} as const
+}
 
-export const darkTheme = {
+export const darkTheme: AppTheme = {
   ...lightTheme,
   colors: {
     ...lightTheme.colors,
@@ -30,6 +50,4 @@ export const darkTheme = {
     navyMuted: palette.navy[300],
     border: palette.navy[500],
   },
-} as const
-
-export type AppTheme = typeof lightTheme
+}

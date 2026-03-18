@@ -1,0 +1,12 @@
+{
+  "expo": {
+    "extra": {
+      "eas": {
+        "projectId": "2a45cc71-d8a5-44e9-ac34-35701b302740"
+      }
+    },
+    "android": {
+      "package": "com.swanono.arrathon"
+    }
+  }
+}
