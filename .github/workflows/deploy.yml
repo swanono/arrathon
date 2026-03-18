@@ -18,6 +18,6 @@ jobs:
       - name: Install dependencies
         run: pnpm install --frozen-lockfile
       - name: Deploy to Railway
-        run: npx @railway/cli@latest up --service api --detach
+        run: npx @railway/cli@latest up --service ${{ secrets.RAILWAY_SERVICE_ID }} --detach
         env:
           RAILWAY_TOKEN: ${{ secrets.RAILWAY_TOKEN }}
