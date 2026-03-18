@@ -4,10 +4,11 @@
   "private": true,
   "type": "module",
   "exports": {
-    ".": "./src/index.ts",
-    "./schema": "./src/schema/index.ts"
+    ".": "./dist/index.js",
+    "./schema": "./dist/schema.js"
   },
   "scripts": {
+    "build": "tsup",
     "db:generate": "drizzle-kit generate",
     "db:migrate": "drizzle-kit migrate",
     "db:studio": "drizzle-kit studio"
@@ -19,7 +20,8 @@
   "devDependencies": {
     "@repo/typescript-config": "workspace:*",
     "@types/node": "^22.1.0",
+    "dotenv": "^16.4.5",
     "drizzle-kit": "^0.31.9",
-    "dotenv": "^16.4.5"
+    "tsup": "^8.5.0"
   }
 }

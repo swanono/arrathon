@@ -1,6 +1,6 @@
 [build]
 builder = "nixpacks"
-buildCommand = "pnpm install --frozen-lockfile && pnpm --filter @arrathon/api build"
+buildCommand = "pnpm install --frozen-lockfile && pnpm --filter @arrathon/db build && pnpm --filter @arrathon/api build"
 
 [deploy]
 startCommand = "pnpm --filter @arrathon/db db:migrate && node apps/api/dist/index.js"
