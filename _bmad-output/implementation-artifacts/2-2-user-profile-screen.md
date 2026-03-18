@@ -1,6 +1,6 @@
 # Story 2.2: User Profile Screen
 
-Status: review
+Status: done
 
 ## Story
 
@@ -72,11 +72,21 @@ claude-sonnet-4-6
 
 - ✅ `auth.api.ts` — ajout `logout()` : appelle `POST /auth/logout` avec `.catch(() => null)` (silencieux si offline)
 - ✅ `profile.tsx` — affiche nom, prénom, email, avatar (Image ou initiales en fallback), bouton "Se déconnecter"
-- ✅ Logout : appelle API → delete SecureStore → store.logout() → redirect login
+- ✅ Logout : appelle API → delete SecureStore (`refresh_token` + `auth_user`) → store.logout() → redirect login
 - ✅ `(app)/_layout.tsx` — tabs Accueil + Profil explicites via `<Tabs.Screen>`
+- ✅ `callback.tsx` — stocke aussi `auth_user` en JSON dans SecureStore au login
+- ✅ `_layout.tsx` — silent refresh restaure le user depuis SecureStore via `login(user, accessToken)` au lieu de `setAccessToken`
+- ✅ `profile.tsx` — fallback si `user` null : clear SecureStore + logout store + redirect login (cas upgrade depuis ancienne session)
+
+### Décisions & Learnings
+
+- **User persistance** : le JWT ne contient pas `avatarUrl`, donc impossible de reconstruire le user complet depuis le token seul. Solution : stocker le user en JSON dans SecureStore (`auth_user`) au moment du login, et le restaurer au silent refresh.
+- **Silent refresh** : appeler `login(user, accessToken)` plutôt que `setAccessToken` pour garantir que `user` est toujours peuplé dans le store.
 
 ### File List
 
-- `apps/mobile/src/api/auth.api.ts` (modified)
+- `apps/mobile/src/api/auth.api.ts` (modified — ajout logout)
 - `apps/mobile/app/(app)/profile.tsx` (new)
-- `apps/mobile/app/(app)/_layout.tsx` (modified)
+- `apps/mobile/app/(app)/_layout.tsx` (modified — tabs Accueil + Profil)
+- `apps/mobile/app/(auth)/callback.tsx` (modified — stockage auth_user SecureStore)
+- `apps/mobile/app/_layout.tsx` (modified — silent refresh restaure user)

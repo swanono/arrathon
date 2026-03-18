@@ -1,8 +1,17 @@
-import { Tabs } from 'expo-router'
+import { useEffect } from 'react'
+import { Tabs, router } from 'expo-router'
 import { useTheme } from '../../src/theme'
+import { useAuthStore } from '../../src/stores/use-auth-store'
 
 export default function AppLayout() {
   const theme = useTheme()
+  const accessToken = useAuthStore((s) => s.accessToken)
+
+  useEffect(() => {
+    if (!accessToken) {
+      router.replace('/(auth)/login')
+    }
+  }, [accessToken])
 
   return (
     <Tabs
