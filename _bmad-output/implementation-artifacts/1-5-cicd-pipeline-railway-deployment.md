@@ -183,13 +183,31 @@ claude-sonnet-4-6
 ### Completion Notes List
 
 - ✅ `pull-request.yml` renamed to `ci.yml`, name updated to "CI", added `--frozen-lockfile`
-- ✅ `.github/workflows/deploy.yml` created — triggers on push to main, uses Railway CLI
-- ✅ `railway.toml` created — Nixpacks build config with db:migrate + api build + health check
+- ✅ `.github/workflows/deploy.yml` created — triggers on push to main, uses Railway CLI with `RAILWAY_SERVICE_ID` secret
+- ✅ `railway.toml` created — Nixpacks build, db:migrate in start command (not build), health check `/health`
+- ✅ `dist/` added to root `.gitignore`
 - ✅ `PORT` already properly configured in `apps/api/src/index.ts` (`process.env.PORT ?? 3000`)
-- ⚠️ Task 2 (Railway project setup) and Task 5 (E2E verification) require manual steps from Sacha
+- ✅ `apps/api` switched from `tsc` to `tsup` — fixes ESM module resolution in prod (Node.js requires .js extensions, tsup bundles into single file)
+- ✅ `libs/db` — added `tsup.config.ts` + `build` script, exports updated from `src/*.ts` → `dist/*.js`
+- ✅ `railway.toml` build command updated to build `@arrathon/db` before `@arrathon/api`
+- ✅ Railway deployed successfully — `GET /health` returns `{"data":{"status":"ok"}}`
+- ⚠️ Railway manual setup done by Sacha: PostgreSQL plugin, env vars, RAILWAY_TOKEN + RAILWAY_SERVICE_ID GitHub secrets
+
+### Unplanned Changes (deviations from story spec)
+
+- `db:migrate` moved from build command to start command — `DATABASE_URL` only available at runtime on Railway, not during build
+- `deploy.yml` uses `RAILWAY_SERVICE_ID` secret instead of service name — Railway CLI requires ID not display name
+- `apps/api` build tooling changed from `tsc` to `tsup` — ESM module resolution fix
+- `libs/db` gained a build step — was previously exporting raw `.ts` sources (dev-only setup), needed proper `dist/` for prod
 
 ### File List
 
 - `.github/workflows/ci.yml` (renamed from `pull-request.yml`, updated)
 - `.github/workflows/deploy.yml` (new)
-- `railway.toml` (new)
+- `railway.toml` (new, updated)
+- `.gitignore` (added `dist/`)
+- `apps/api/package.json` (build script: tsc → tsup)
+- `apps/api/tsup.config.ts` (new)
+- `libs/db/package.json` (exports: src/*.ts → dist/*.js, build script added)
+- `libs/db/tsup.config.ts` (new)
+- `pnpm-lock.yaml` (updated)
