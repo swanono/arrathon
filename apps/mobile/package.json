@@ -17,7 +17,6 @@
     "react-native": "0.83.2",
     "react-native-safe-area-context": "~5.6.2",
     "react-native-screens": "~4.23.0",
-    "react-native-unistyles": "^3.1.1",
     "react-native-web": "^0.21.2",
     "zustand": "^5.0.12"
   },

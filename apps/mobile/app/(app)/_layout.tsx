@@ -1,8 +1,8 @@
 import { Tabs } from 'expo-router'
-import { useStyles } from 'react-native-unistyles'
+import { useTheme } from '../../src/theme'
 
 export default function AppLayout() {
-  const { theme } = useStyles()
+  const theme = useTheme()
 
   return (
     <Tabs
