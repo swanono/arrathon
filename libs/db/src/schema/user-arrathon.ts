@@ -1,16 +1,16 @@
-import { pgTable, uuid, boolean, timestamp, primaryKey, pgEnum } from 'drizzle-orm/pg-core';
-import { users } from './users.ts';
-import { arrathons } from './arrathons.ts';
-import { locations } from './locations.ts';
+import { pgTable, uuid, boolean, timestamp, primaryKey, pgEnum } from 'drizzle-orm/pg-core'
+import { users } from './users'
+import { arrathons } from './arrathons'
+import { locations } from './locations'
 
-export const participantRoleEnum = pgEnum('participant_role', ['participant', 'organisator']);
+export const participantRoleEnum = pgEnum('participant_role', ['participant', 'organisator'])
 
 export const participantStatusEnum = pgEnum('participant_status', [
   'active',
   'abandoned',
   'returned',
   'partial',
-]);
+])
 
 export const userArrathon = pgTable(
   'user_arrathon',
@@ -30,7 +30,7 @@ export const userArrathon = pgTable(
     createdAt: timestamp('created_at').defaultNow().notNull(),
   },
   (table) => [primaryKey({ columns: [table.userId, table.arrathonId] })],
-);
+)
 
-export type UserArrathon = typeof userArrathon.$inferSelect;
-export type NewUserArrathon = typeof userArrathon.$inferInsert;
+export type UserArrathon = typeof userArrathon.$inferSelect
+export type NewUserArrathon = typeof userArrathon.$inferInsert

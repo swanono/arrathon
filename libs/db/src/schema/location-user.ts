@@ -1,6 +1,6 @@
-import { pgTable, uuid, timestamp, primaryKey } from 'drizzle-orm/pg-core';
-import { locations } from './locations.ts';
-import { users } from './users.ts';
+import { pgTable, uuid, timestamp, primaryKey } from 'drizzle-orm/pg-core'
+import { locations } from './locations'
+import { users } from './users'
 
 export const locationUser = pgTable(
   'location_user',
@@ -14,7 +14,7 @@ export const locationUser = pgTable(
     createdAt: timestamp('created_at').defaultNow().notNull(),
   },
   (table) => [primaryKey({ columns: [table.locationId, table.userId] })],
-);
+)
 
-export type LocationUser = typeof locationUser.$inferSelect;
-export type NewLocationUser = typeof locationUser.$inferInsert;
+export type LocationUser = typeof locationUser.$inferSelect
+export type NewLocationUser = typeof locationUser.$inferInsert

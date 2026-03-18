@@ -1,13 +1,13 @@
-import { pgTable, uuid, integer, timestamp, pgEnum, unique } from 'drizzle-orm/pg-core';
-import { arrathons } from './arrathons.ts';
-import { locations } from './locations.ts';
+import { pgTable, uuid, integer, timestamp, pgEnum, unique } from 'drizzle-orm/pg-core'
+import { arrathons } from './arrathons'
+import { locations } from './locations'
 
 export const locationTypeEnum = pgEnum('location_type', [
   'bar',
   'apartment',
   'monument',
   'pit_stand',
-]);
+])
 
 export const arrathonLocation = pgTable(
   'arrathon_location',
@@ -28,7 +28,7 @@ export const arrathonLocation = pgTable(
     unique('uq_arrathon_location_order').on(table.arrathonId, table.orderPosition),
     unique('uq_arrathon_location_pair').on(table.arrathonId, table.locationId),
   ],
-);
+)
 
-export type ArrathonLocation = typeof arrathonLocation.$inferSelect;
-export type NewArrathonLocation = typeof arrathonLocation.$inferInsert;
+export type ArrathonLocation = typeof arrathonLocation.$inferSelect
+export type NewArrathonLocation = typeof arrathonLocation.$inferInsert

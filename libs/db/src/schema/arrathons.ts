@@ -1,5 +1,5 @@
-import { pgTable, uuid, varchar, date, time, text, integer, boolean, timestamp } from 'drizzle-orm/pg-core';
-import { users } from './users.ts';
+import { pgTable, uuid, varchar, date, time, text, integer, boolean, timestamp } from 'drizzle-orm/pg-core'
+import { users } from './users'
 
 export const arrathons = pgTable('arrathons', {
   id: uuid('id').primaryKey().defaultRandom(),
@@ -13,7 +13,7 @@ export const arrathons = pgTable('arrathons', {
   packCommanderId: uuid('pack_commander_id').references(() => users.id, { onDelete: 'set null' }),
   createdAt: timestamp('created_at').defaultNow().notNull(),
   updatedAt: timestamp('updated_at').defaultNow().notNull(),
-});
+})
 
-export type Arrathon = typeof arrathons.$inferSelect;
-export type NewArrathon = typeof arrathons.$inferInsert;
+export type Arrathon = typeof arrathons.$inferSelect
+export type NewArrathon = typeof arrathons.$inferInsert
