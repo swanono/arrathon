@@ -15,6 +15,9 @@ export default function AppLayout() {
           borderTopColor: theme.colors.border,
         },
       }}
-    />
+    >
+      <Tabs.Screen name='index' options={{ title: 'Accueil' }} />
+      <Tabs.Screen name='profile' options={{ title: 'Profil' }} />
+    </Tabs>
   )
 }

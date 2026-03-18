@@ -7,14 +7,21 @@ import { refreshToken } from '../src/api/auth.api'
 
 export default function RootLayout() {
   useEffect(() => {
-    SecureStore.getItemAsync('refresh_token').then(async (token) => {
+    Promise.all([
+      SecureStore.getItemAsync('refresh_token'),
+      SecureStore.getItemAsync('auth_user'),
+    ]).then(async ([token, userJson]) => {
       if (!token) return
       try {
         const { accessToken } = await refreshToken(token)
-        useAuthStore.getState().setAccessToken(accessToken)
+        const user = userJson ? JSON.parse(userJson) : null
+        useAuthStore.getState().login(user, accessToken)
         router.replace('/(app)')
       } catch {
-        await SecureStore.deleteItemAsync('refresh_token')
+        await Promise.all([
+          SecureStore.deleteItemAsync('refresh_token'),
+          SecureStore.deleteItemAsync('auth_user'),
+        ])
       }
     })
   }, [])

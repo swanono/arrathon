@@ -33,7 +33,10 @@ export default function AuthCallback() {
       avatarUrl: avatarUrl ?? null,
     }
 
-    SecureStore.setItemAsync('refresh_token', refreshToken)
+    Promise.all([
+      SecureStore.setItemAsync('refresh_token', refreshToken),
+      SecureStore.setItemAsync('auth_user', JSON.stringify(user)),
+    ])
       .then(() => {
         useAuthStore.getState().login(user, accessToken)
         router.replace('/(app)')

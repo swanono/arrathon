@@ -11,3 +11,7 @@ export async function refreshToken(token: string): Promise<{ accessToken: string
   const json = await res.json() as { data: { accessToken: string } }
   return { accessToken: json.data.accessToken }
 }
+
+export async function logout(): Promise<void> {
+  await apiFetch('/auth/logout', { method: 'POST' }).catch(() => null)
+}
