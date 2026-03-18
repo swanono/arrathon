@@ -1,0 +1,204 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Venue Detail - Le Bistro des Amis</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "primary": "#58cc02", // Vibrant action green (Duolingo style)
+                        "primary-dark": "#46a302",
+                        "secondary": "#1b2d48", // Deep navy blue
+                        "background-light": "#ffffff",
+                        "surface": "#f7f7f7",
+                    },
+                    fontFamily: {
+                        "display": ["Plus Jakarta Sans"]
+                    },
+                    borderRadius: {"DEFAULT": "0.5rem", "lg": "1rem", "xl": "1.5rem", "full": "9999px"},
+                },
+            },
+        }
+    </script>
+<style>
+        body {
+            font-family: "Plus Jakarta Sans", sans-serif;
+        }
+        .no-scrollbar::-webkit-scrollbar {
+            display: none;
+        }
+        body {
+            min-height: max(884px, 100dvh);
+        }
+        /* Duolingo-style 3D button effect */
+        .btn-3d {
+            transition: all 0.1s;
+            box-shadow: 0 4px 0 0 #46a302;
+        }
+        .btn-3d:active {
+            transform: translateY(4px);
+            box-shadow: 0 0px 0 0 #46a302;
+        }
+    </style>
+</head>
+<body class="bg-slate-50 text-secondary antialiased font-display">
+<div class="relative flex min-h-screen w-full flex-col max-w-md mx-auto bg-white shadow-2xl overflow-x-hidden pb-40">
+<header class="sticky top-0 z-50 flex items-center justify-between px-4 py-4 bg-white/90 backdrop-blur-md border-b border-slate-100">
+<button class="flex size-10 items-center justify-center rounded-full bg-slate-100 text-secondary hover:bg-slate-200 transition-colors">
+<span class="material-symbols-outlined">arrow_back</span>
+</button>
+<h2 class="text-lg font-bold tracking-tight text-secondary">Stop #3: 15th Arr.</h2>
+<div class="flex gap-2">
+<button class="flex size-10 items-center justify-center rounded-full bg-slate-100 text-secondary hover:bg-slate-200 transition-colors">
+<span class="material-symbols-outlined">share</span>
+</button>
+<button class="flex size-10 items-center justify-center rounded-full bg-slate-100 text-secondary hover:bg-slate-200 transition-colors">
+<span class="material-symbols-outlined">favorite</span>
+</button>
+</div>
+</header>
+<main class="flex-1">
+<div class="px-4 py-4">
+<div class="relative aspect-[4/3] w-full overflow-hidden rounded-2xl">
+<img alt="Cozy Parisian bistro interior" class="h-full w-full object-cover" src="https://lh3.googleusercontent.com/aida-public/AB6AXuC72xwkQVFQCg1SfW1phUAf2ftpccWOnML8s3VmFc2_7ggafj3K50LrCXT0UTJ5jZgKQp1WCRGrRskeHNZSzWjhyWZyJPVoEPG7YC0im7HjY0avO8aFj7yY5suwei2TQrIXYHhkzNZMXYu6UC_kwkhuUbtw13jx9FFGK-V15tTqnetOh2CQrkFqgZmpqh-VJsB9mcZwiVq0_tcmtQ0HqJskmDLMrWFk8xMZajIT1OIeFF1PpbMvY8RGXAxRsyaafV95PThL5JJ9cf8"/>
+<div class="absolute bottom-3 right-3 rounded-full bg-black/40 px-3 py-1 text-[10px] font-bold text-white backdrop-blur-sm">
+                        1 / 5
+                    </div>
+</div>
+</div>
+<section class="px-4 pt-4 pb-2">
+<div class="flex items-start justify-between">
+<div class="flex-1 pr-4">
+<h1 class="text-3xl font-extrabold tracking-tight text-secondary">Le Bistro des Amis</h1>
+<p class="mt-1 text-slate-500 font-medium">Traditional French Bar • 15th Arr.</p>
+</div>
+<div class="flex flex-col items-end">
+<div class="flex items-center gap-1 rounded-xl bg-primary/10 px-3 py-1 text-primary">
+<span class="text-sm font-black">4.8</span>
+<span class="material-symbols-outlined !text-[16px] fill-current">star</span>
+</div>
+<p class="mt-1 text-[10px] font-bold text-slate-400 uppercase tracking-tighter underline">124 reviews</p>
+</div>
+</div>
+<div class="mt-8 flex flex-col gap-5 border-t border-slate-100 pt-6">
+<div class="flex items-start gap-4">
+<div class="flex size-10 items-center justify-center rounded-xl bg-slate-50 text-primary">
+<span class="material-symbols-outlined">location_on</span>
+</div>
+<div>
+<p class="font-bold text-secondary">42 Rue de Vaugirard, 75015 Paris</p>
+<p class="text-sm text-slate-500">Located in the heart of Vaugirard</p>
+</div>
+</div>
+<div class="flex items-start gap-4">
+<div class="flex size-10 items-center justify-center rounded-xl bg-slate-50 text-primary">
+<span class="material-symbols-outlined">local_activity</span>
+</div>
+<div>
+<p class="font-bold text-secondary">Arrathon Partner</p>
+<p class="text-sm text-slate-500">Collect 50 XP for stopping here</p>
+</div>
+</div>
+</div>
+</section>
+<section class="mt-8 px-4">
+<h3 class="text-lg font-black text-secondary uppercase tracking-tight">Arrathon Specials</h3>
+<div class="mt-4 flex gap-4 overflow-x-auto no-scrollbar pb-2">
+<div class="min-w-[180px] rounded-2xl border-2 border-primary bg-primary/5 p-4 relative overflow-hidden">
+<div class="absolute -right-2 -top-2 opacity-10">
+<span class="material-symbols-outlined !text-[64px] text-primary">sports_bar</span>
+</div>
+<span class="material-symbols-outlined text-primary mb-2 font-bold">sports_bar</span>
+<p class="font-black text-secondary">Happy Hour</p>
+<p class="text-sm text-slate-600">Pints at €5.00</p>
+<div class="mt-3 inline-block rounded-md bg-primary px-2 py-0.5 text-[10px] font-black text-white uppercase">All Night</div>
+</div>
+<div class="min-w-[180px] rounded-2xl border border-slate-200 bg-white p-4 relative overflow-hidden">
+<span class="material-symbols-outlined text-slate-400 mb-2 font-bold">bakery_dining</span>
+<p class="font-black text-secondary">Free Apps</p>
+<p class="text-sm text-slate-600">With 4+ check-ins</p>
+<div class="mt-3 inline-block rounded-md bg-slate-100 px-2 py-0.5 text-[10px] font-black text-slate-500 uppercase">Group Only</div>
+</div>
+</div>
+</section>
+<section class="mt-10 px-4">
+<div class="flex items-center justify-between mb-4">
+<h3 class="text-lg font-black text-secondary uppercase tracking-tight">Friends Here</h3>
+<span class="text-xs font-black text-primary bg-primary/10 px-2 py-1 rounded-full uppercase">4 Active</span>
+</div>
+<div class="flex flex-col gap-6">
+<div class="flex items-center justify-between">
+<div class="flex items-center gap-3">
+<div class="relative size-12 overflow-hidden rounded-2xl border-2 border-primary">
+<img alt="User profile picture" class="h-full w-full object-cover" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBtM-1hnQc2jfBim3zlm3mz8Fuk-ZZGGpqFh7gIPO95l0V1d1t5MIxV3knewa4M-XHRz_mG59zERs2NrdRJ4wDbzdchhkz4KC642f208_KDB4Ezgg8N94jV0EC66oa0lJx3KhGf8jaAQHJRkvERPsMOgGjLyxrHwQUNuJEY6y4E-ZQA8DRhlLlutOU-zUkJWBjuGEbP5xF92NuxMLgCkbCB2f9EImVtd_l3ERXYQuqYkxGFjRcxGXEgL7dmBMlG6UN7pggX5R3yamI"/>
+</div>
+<div>
+<p class="font-extrabold text-secondary">Thomas</p>
+<p class="text-xs font-medium text-slate-400">Arrived 15m ago</p>
+</div>
+</div>
+<div class="rounded-xl border border-primary/20 bg-primary/5 px-3 py-1">
+<span class="text-[10px] font-black text-primary uppercase">#1 Leaderboard</span>
+</div>
+</div>
+<div class="flex items-center gap-4 py-2 px-3 bg-slate-50 rounded-2xl border border-slate-100">
+<div class="flex -space-x-3 overflow-hidden">
+<img alt="User avatar" class="inline-block size-9 rounded-full ring-2 ring-white" src="https://lh3.googleusercontent.com/aida-public/AB6AXuA8_LfKOdKv0BJ2e6uPkuyCV6Gt60eAMhHzs4ETBn7GlhZ8lK9DLMyriuYq5InashZ-RslYvdyfn6mQM_j-6N3PGMFwLlWC10z9UbdpNbopVIVXermtOqhE8HqsAnkT7V-PauLxJtyX2_EuiIZKVhSFXdtmcYfSz1UMwPuMOxSgTcR3I1K3WXW7knUJpXtJ1RdtaSYwA0gb8SwYsAwjYStm1tpwOrkrw3czm1Nk54wWPhtOgAED87KJRYDhILN0fkDnwtQSNzvmm74"/>
+<img alt="User avatar" class="inline-block size-9 rounded-full ring-2 ring-white" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCt3x-7f6QEhf1VQbLXDV95VpKxzHTfbvAqWTvxlJ6sjqHQNJ0LwIH5dfCe3RDiDkEEDXxtK8DUWHIlZTAGGZdGXGBSwTeq6z-UhXkYKcTDKKSxt-x-ZW6V3FzWt18EKVvYmUwmFun4Ty8w3TlG9_HoLw6mfH_8zChIr_IprHvj721tUuzUsk8FvmhWYCuH6-en38M1bRikWImqBqByx3wg0KmEBGCvKgFHkVoc0I1t95B5GvtNAPia19E7Ykpusfo9GXBHHX84NBc"/>
+<div class="inline-flex size-9 items-center justify-center rounded-full bg-slate-200 text-[10px] font-black ring-2 ring-white text-slate-600">
+                                +3
+                            </div>
+</div>
+<p class="text-xs font-bold text-secondary">Sarah and 4 others are here</p>
+</div>
+</div>
+</section>
+<section class="mt-10 px-4">
+<div class="rounded-2xl bg-slate-50 p-1 border border-slate-100">
+<div class="aspect-[21/9] w-full overflow-hidden rounded-xl">
+<img alt="Map showing bistro location in Paris" class="h-full w-full object-cover grayscale-[0.2] contrast-[1.1]" src="https://lh3.googleusercontent.com/aida-public/AB6AXuAtvCfPOB1WdHdKPed0whhjftm5XWU1Nxt7o9nrqp3EnLdXuJFoBoUmKLnw-RtUE_e2bxAh8-Ox-sspULWiyK2KpBYQz48XhPwFamxlLfU4tMkwOpFGNP0ibtuODhK6oyG-8-BPTtMLQEDEWZkVO6Dy_x7W5MDE1TlVY2nUzroU9urwe6LvI2JxygdQSQ2DH8svol1-jjK7EaBuVytDD_ANYDksCUERGsnKOByGwc_vIaXVDusAUEHCqb8MkNzZQrfztz3U_Lrrlk4"/>
+</div>
+</div>
+</section>
+</main>
+<footer class="fixed bottom-0 left-1/2 -translate-x-1/2 z-[60] w-full max-w-md bg-white border-t border-slate-100 p-4 px-6 flex flex-col gap-4">
+<button class="btn-3d w-full h-16 bg-primary text-white rounded-2xl flex flex-col items-center justify-center transition-all">
+<div class="flex items-center gap-2">
+<span class="material-symbols-outlined !text-[28px] font-bold">qr_code_scanner</span>
+<span class="text-lg font-black tracking-wide uppercase">Check-in &amp; Validate</span>
+</div>
+<span class="text-[9px] font-black opacity-80 uppercase tracking-widest">Earn 50 XP • 5 Coins</span>
+</button>
+<nav class="flex justify-around items-center pt-2">
+<a class="flex flex-col items-center gap-1 text-primary" href="#">
+<span class="material-symbols-outlined font-bold">map</span>
+<span class="text-[9px] font-black uppercase">Map</span>
+</a>
+<a class="flex flex-col items-center gap-1 text-slate-300 hover:text-secondary transition-colors" href="#">
+<span class="material-symbols-outlined">group</span>
+<span class="text-[9px] font-black uppercase">Friends</span>
+</a>
+<div class="relative -top-4">
+<div class="size-14 rounded-2xl bg-secondary flex items-center justify-center text-white border-4 border-white shadow-lg rotate-3">
+<span class="material-symbols-outlined !text-3xl">emoji_events</span>
+</div>
+</div>
+<a class="flex flex-col items-center gap-1 text-slate-300 hover:text-secondary transition-colors" href="#">
+<span class="material-symbols-outlined">monitoring</span>
+<span class="text-[9px] font-black uppercase">Stats</span>
+</a>
+<a class="flex flex-col items-center gap-1 text-slate-300 hover:text-secondary transition-colors" href="#">
+<span class="material-symbols-outlined">account_circle</span>
+<span class="text-[9px] font-black uppercase">Profile</span>
+</a>
+</nav>
+</footer>
+</div>
+</body></html>

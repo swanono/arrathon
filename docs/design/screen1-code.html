@@ -1,0 +1,183 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "primary": "#10b981", // Vibrant Green
+                        "accent": "#059669",
+                        "navy": "#0f172a", // Deep Navy
+                        "background": "#ffffff",
+                    },
+                    fontFamily: {
+                        "display": ["Plus Jakarta Sans"]
+                    },
+                    borderRadius: {"DEFAULT": "0.5rem", "lg": "1rem", "xl": "1.5rem", "full": "9999px"},
+                },
+            },
+        }
+    </script>
+<style>
+        body {
+            min-height: max(884px, 100dvh);
+        }
+        /* 3D Relief Style for buttons */
+        .btn-3d {
+            box-shadow: 0 4px 0 rgb(226, 232, 240);
+            transform: translateY(-2px);
+            transition: all 0.1s ease;
+        }
+        .btn-3d:active {
+            transform: translateY(1px);
+            box-shadow: 0 1px 0 rgb(226, 232, 240);
+        }
+        .btn-3d-primary {
+            box-shadow: 0 4px 0 #047857;
+            transform: translateY(-2px);
+            transition: all 0.1s ease;
+        }
+        .btn-3d-primary:active {
+            transform: translateY(1px);
+            box-shadow: 0 1px 0 #047857;
+        }
+    </style>
+</head>
+<body class="bg-white font-display text-navy overflow-hidden">
+<div class="relative flex h-screen w-full flex-col overflow-hidden">
+<!-- Header -->
+<div class="absolute top-0 left-0 right-0 z-20 flex items-center bg-white/90 backdrop-blur-md p-4 justify-between border-b border-slate-100">
+<div class="flex items-center gap-3">
+<div class="flex size-10 items-center justify-center rounded-xl bg-slate-50 border border-slate-200 text-navy">
+<span class="material-symbols-outlined">menu</span>
+</div>
+<div>
+<h2 class="text-navy text-lg font-bold leading-tight tracking-tight">Paris Adventure</h2>
+<p class="text-[10px] text-primary font-bold uppercase tracking-widest">Group Expedition • 4 Active</p>
+</div>
+</div>
+<div class="flex items-center gap-2">
+<button class="flex size-10 items-center justify-center rounded-full bg-navy text-white shadow-md">
+<span class="material-symbols-outlined text-xl">share</span>
+</button>
+</div>
+</div>
+<!-- Progress Tracker -->
+<div class="absolute top-20 left-4 right-4 z-20">
+<div class="bg-white p-3 rounded-2xl border border-slate-200 shadow-lg">
+<div class="flex justify-between items-end mb-2">
+<span class="text-[10px] font-extrabold text-navy uppercase tracking-widest">Expedition Progress</span>
+<span class="text-[10px] font-extrabold text-navy px-2 py-0.5 bg-slate-100 rounded">2 / 20 STOPS</span>
+</div>
+<div class="w-full bg-slate-100 h-3 rounded-full overflow-hidden p-0.5 border border-slate-200">
+<div class="bg-primary h-full w-[10%] rounded-full"></div>
+</div>
+</div>
+</div>
+<!-- Main Map Area -->
+<div class="relative flex-1 w-full bg-slate-100">
+<div class="absolute inset-0 z-0 bg-cover bg-center" data-alt="Detailed map of Paris showing streets and arrondissements" data-location="Paris" style='background-image: url("https://lh3.googleusercontent.com/aida-public/AB6AXuBjWX3nbvT7Gz1JZ1HhqxyiYskkMAIq0G35koU9zR9AIN7UBB8Wf1qHVD3WuZxx00XRvE8kqFXikCQIa2mq_8_UGN22769d9eTmcaK8oeHsMD_wJzCT0r71VrQco6pu6mmRrFGgQ6ZT82X6KwCMgyMUPgfEh89ItlDRBcYUKUfHbKuG-RZQpr4bsgkO_sy10LLkZBUESvchhHnyeNvEp_r-gXFkmJUorfVWkzsJO66KMsUIbWLX2HGQhM3-0SCGzEp_RNAlBXZv7GE");'>
+<div class="absolute inset-0 bg-gradient-to-b from-white/20 via-transparent to-white/40"></div>
+</div>
+<!-- Map Floating Controls (3D Relief Style) -->
+<div class="absolute right-4 top-1/2 -translate-y-1/2 z-20 flex flex-col gap-3">
+<button class="btn-3d flex size-12 items-center justify-center rounded-xl bg-white border border-slate-200 text-navy font-bold">
+<span class="material-symbols-outlined">add</span>
+</button>
+<button class="btn-3d flex size-12 items-center justify-center rounded-xl bg-white border border-slate-200 text-navy font-bold">
+<span class="material-symbols-outlined">remove</span>
+</button>
+<div class="h-2"></div>
+<button class="btn-3d-primary flex size-14 items-center justify-center rounded-2xl bg-primary text-white">
+<span class="material-symbols-outlined text-3xl">my_location</span>
+</button>
+</div>
+<!-- Group Member Avatars on Map -->
+<div class="absolute top-[45%] left-[40%] z-10 -translate-x-1/2 -translate-y-1/2">
+<div class="relative flex flex-col items-center">
+<div class="bg-primary p-0.5 rounded-full shadow-lg border-2 border-white">
+<div class="size-10 rounded-full bg-cover bg-center" data-alt="Avatar of group member John" style='background-image: url("https://lh3.googleusercontent.com/aida-public/AB6AXuB5PglUvWV3fcHJNFB-C4cd4EiqJlLqtVaEUtkaeG-8C8Wnq190dImkifL8lsXRf-if6qOpAh4x0oHsVtBHabewJE54kT-hOPwqBOt7gOsUqdXzRo1Y0hxGuCDSfiYa_fkSrdVrQeZJ35PAmux92zLCCFGu5poQKXKRY0ETQDVwhlDq-Uh2egWnhtuhb4NBY2c7uzYpfAsXK_PDB9X9-FwMx2KEsMNWeekN8XWBL62SZISUpr39UnnHbAMIuMKBwgN2o2rZcUqKlKU");'></div>
+</div>
+<div class="mt-1 px-3 py-0.5 bg-navy text-white rounded-full shadow-md">
+<p class="text-[10px] font-bold">John</p>
+</div>
+</div>
+</div>
+<div class="absolute top-[55%] left-[60%] z-10 -translate-x-1/2 -translate-y-1/2">
+<div class="relative flex flex-col items-center">
+<div class="bg-navy p-0.5 rounded-full shadow-lg border-2 border-white">
+<div class="size-10 rounded-full bg-cover bg-center" data-alt="Avatar of group member Sarah" style='background-image: url("https://lh3.googleusercontent.com/aida-public/AB6AXuDzwaMvhF_3o0sYqM2DJnApfM4mhI_8GLhjhZXeRvmL5obJxm7Q3Uvn77QKlTQx-MevdhU-izMHSE0gUBnMg4ZTIl2lUmWjVRz1J2WeLzE8wK187q9alFtLEZGiA5HhUbg7ddXJGJRzWmIuuzhatHdF1pJtoPj41zyLCyLItn1d5rJCMZZTBF_zFCUrIVknUKuzoIBOS1gewIfGWd4VSgJvIw9KdWYF4krKIYbqwq12Vlo2lzOBdvyb49dsGofku4h0GvqiUNuWTSo");'></div>
+</div>
+<div class="mt-1 px-3 py-0.5 bg-navy text-white rounded-full shadow-md">
+<p class="text-[10px] font-bold">Sarah</p>
+</div>
+</div>
+</div>
+</div>
+<!-- Floating Bottom Interface -->
+<div class="absolute bottom-20 left-0 right-0 z-30 px-4 pb-4">
+<div class="flex flex-col gap-3 max-w-lg mx-auto">
+<!-- Group Active Members Pill -->
+<div class="flex justify-center">
+<div class="flex -space-x-2 items-center bg-white border border-slate-200 px-4 py-1.5 rounded-full shadow-lg">
+<div class="size-7 rounded-full border-2 border-white bg-cover bg-center" style='background-image: url("https://lh3.googleusercontent.com/aida-public/AB6AXuCZuNdHVxpS97qZM-2iUxyGYFKmQskTme9zoGHLQkUDzrPFOA_rek8uQgBHSPCLUvLbkTd2Uypj_WX7nAES8Rm70czNmsS0mU2jifsIe4AepiLC5jr9R-oAq4vpsa8tGG1JuT1-4w3fcuskGLpa1brN0x6NcOaXn4Qf0pJDLApVCa9_vXEhsJ1-YwyniMm4H_dRH1QXssFjFUHQfy37ooeEQuuVhz4P8qE9CcUIzxq3kls3cBlxD5B-PiknT5tH4BwAWdjpVW7UL7M");'></div>
+<div class="size-7 rounded-full border-2 border-white bg-cover bg-center" style='background-image: url("https://lh3.googleusercontent.com/aida-public/AB6AXuAf2IYYusoY0mPdwu1zPvhsNhKAJ94EI49W-muXYH3J69UFUM6YWvSS8Lz9QWbs4EhgCcj2FYMVa2c73vtlBVUhhwOAOzWHfSlwivqgLqQbudguSVMq1IwI4ZgxForywuLGLDuz9Swh5nswjGj_W5ibp5EJ04a-xaITYycvRFjE0gxyHlu7F0do6AJXpHHakRvvFxeo7l-KR16yp7XVCKq9iUJzNQ6Mg04soIUr52UP_8wElhtkmKoPvPNK7aw6CGwT_2ychsQgypA");'></div>
+<div class="size-7 rounded-full border-2 border-white bg-slate-800 flex items-center justify-center text-[10px] font-bold text-white">+2</div>
+<span class="ml-3 text-[10px] font-bold text-navy uppercase tracking-tight">Social Active</span>
+</div>
+</div>
+<!-- Next Stop Card -->
+<div class="bg-white rounded-3xl border border-slate-200 shadow-2xl p-4 flex gap-4">
+<div class="flex-1 flex flex-col justify-between">
+<div>
+<p class="text-primary text-[10px] font-extrabold uppercase tracking-widest mb-1">Current Objective</p>
+<h3 class="text-navy text-xl font-extrabold leading-tight">Louvre Museum</h3>
+<p class="text-slate-500 text-xs font-medium mt-1 flex items-center gap-1">
+<span class="material-symbols-outlined text-sm">location_on</span>
+                            1st Arrondissement • 1.2km
+                        </p>
+</div>
+<div class="mt-4 flex gap-2">
+<button class="btn-3d-primary flex-1 bg-primary text-white font-extrabold py-3 rounded-2xl flex items-center justify-center gap-2">
+<span class="material-symbols-outlined text-base">near_me</span>
+                            GO TO NEXT
+                        </button>
+<button class="btn-3d size-12 bg-slate-50 text-navy rounded-2xl flex items-center justify-center border border-slate-200">
+<span class="material-symbols-outlined">info</span>
+</button>
+</div>
+</div>
+<div class="w-28 h-28 rounded-2xl bg-cover bg-center flex-shrink-0 border-4 border-slate-50 shadow-inner" data-alt="Exterior view of the Louvre pyramid" style='background-image: url("https://lh3.googleusercontent.com/aida-public/AB6AXuCOD5QI__QBPF9dJuOpGQpgmhnAsc1458HxC5LVyjWTZaqArELYXumU57L2NS5_8GSFEmHWi8qbWReETDcm_PMqrtCZWkLpppa3U9k36dR-lBqj9BmlR6tlrPuoxUXpZrPREABDrbR--jiKAmnxgXIvpMfvs4jyLVrtvTAJFaymIFbTe0laCQaZTBMYDopGp9_6sIKgDh30dxtTnHfbAyBwyupG5OBWGRTaUrk-2mAGH3IOEMdWfP35DTktEJPDan_j1FKkHUv1Yl8");'></div>
+</div>
+</div>
+</div>
+<!-- Navigation Bar -->
+<div class="absolute bottom-0 left-0 right-0 z-40 bg-white border-t border-slate-200 px-6 py-3">
+<div class="flex justify-between items-center max-w-md mx-auto">
+<a class="flex flex-col items-center gap-1 text-primary" href="#">
+<span class="material-symbols-outlined fill-1 text-2xl">explore</span>
+<p class="text-[9px] font-extrabold uppercase">Explore</p>
+</a>
+<a class="flex flex-col items-center gap-1 text-slate-400 hover:text-navy transition-colors" href="#">
+<span class="material-symbols-outlined text-2xl">flag</span>
+<p class="text-[9px] font-extrabold uppercase">Quests</p>
+</a>
+<a class="flex flex-col items-center gap-1 text-slate-400 hover:text-navy transition-colors" href="#">
+<span class="material-symbols-outlined text-2xl">group</span>
+<p class="text-[9px] font-extrabold uppercase">Social</p>
+</a>
+<a class="flex flex-col items-center gap-1 text-slate-400 hover:text-navy transition-colors" href="#">
+<span class="material-symbols-outlined text-2xl">person</span>
+<p class="text-[9px] font-extrabold uppercase">Profile</p>
+</a>
+</div>
+</div>
+</div>
+</body></html>
