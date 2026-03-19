@@ -36,3 +36,18 @@ export async function joinArrathon(token: string): Promise<void> {
   const res = await apiFetch(`/arrathons/join/${token}`, { method: 'POST' })
   if (!res.ok) throw new Error('Failed to join arrathon')
 }
+
+export type Participant = {
+  id: string
+  name: string
+  familyName: string
+  avatarUrl: string | null
+  role: 'organisator' | 'participant'
+}
+
+export async function getParticipants(arrathonId: string): Promise<Participant[]> {
+  const res = await apiFetch(`/arrathons/${arrathonId}/participants`)
+  if (!res.ok) throw new Error('Failed to fetch participants')
+  const json = await res.json() as { data: Participant[] }
+  return json.data
+}

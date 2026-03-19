@@ -53,6 +53,27 @@ export async function joinByToken(token: string, userId: string) {
   return arrathon
 }
 
+export async function getParticipants(arrathonId: string, userId: string) {
+  const [membership] = await db
+    .select()
+    .from(userArrathon)
+    .where(and(eq(userArrathon.arrathonId, arrathonId), eq(userArrathon.userId, userId)))
+
+  if (!membership) throw new DomainError('FORBIDDEN', 403, 'Not a member')
+
+  return db
+    .select({
+      id: users.id,
+      name: users.name,
+      familyName: users.familyName,
+      avatarUrl: users.avatarUrl,
+      role: userArrathon.role,
+    })
+    .from(userArrathon)
+    .innerJoin(users, eq(userArrathon.userId, users.id))
+    .where(eq(userArrathon.arrathonId, arrathonId))
+}
+
 export async function getMyArrathons(userId: string) {
   return db
     .select({

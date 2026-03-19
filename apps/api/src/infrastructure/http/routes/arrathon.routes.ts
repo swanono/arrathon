@@ -2,7 +2,7 @@ import { Hono } from 'hono'
 import { zValidator } from '@hono/zod-validator'
 import { z } from 'zod'
 import { authMiddleware } from '../middleware/auth.middleware'
-import { createArrathon, getMyArrathons, getArrathon, joinByToken } from '../../../application/arrathons/arrathon.service'
+import { createArrathon, getMyArrathons, getArrathon, joinByToken, getParticipants } from '../../../application/arrathons/arrathon.service'
 
 type Variables = { userId: string }
 
@@ -32,6 +32,12 @@ arrathonRoutes.get('/:id', async (c) => {
   const userId = c.get('userId')
   const arrathon = await getArrathon(c.req.param('id'), userId)
   return c.json({ data: arrathon })
+})
+
+arrathonRoutes.get('/:id/participants', async (c) => {
+  const userId = c.get('userId')
+  const participants = await getParticipants(c.req.param('id'), userId)
+  return c.json({ data: participants })
 })
 
 arrathonRoutes.post('/join/:token', async (c) => {

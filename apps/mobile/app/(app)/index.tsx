@@ -43,7 +43,7 @@ export default function HomeScreen() {
           keyExtractor={(item) => item.id}
           contentContainerStyle={styles.list}
           renderItem={({ item }) => (
-            <View style={styles.card}>
+            <Pressable style={styles.card} onPress={() => router.push(`/arrathon/${item.id}` as never)}>
               <View style={styles.cardRow}>
                 <Text style={styles.cardName}>{item.name}</Text>
                 <View style={[styles.badge, item.role === 'organisator' && styles.badgeOrga]}>
@@ -58,7 +58,7 @@ export default function HomeScreen() {
                   <Text style={styles.shareBtnText}>Inviter des participants</Text>
                 </Pressable>
               )}
-            </View>
+            </Pressable>
           )}
         />
       )}
