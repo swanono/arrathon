@@ -27,6 +27,7 @@ export default function AppLayout() {
     >
       <Tabs.Screen name='index' options={{ title: 'Accueil' }} />
       <Tabs.Screen name='profile' options={{ title: 'Profil' }} />
+      <Tabs.Screen name='create-arrathon' options={{ href: null }} />
     </Tabs>
   )
 }

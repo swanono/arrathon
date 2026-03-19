@@ -5,6 +5,7 @@ import { serve } from '@hono/node-server'
 import { db, users } from '@arrathon/db'
 import { DomainError } from './domain/errors/domain-error'
 import { authRoutes } from './infrastructure/http/routes/auth.routes'
+import { arrathonRoutes } from './infrastructure/http/routes/arrathon.routes'
 
 const app = new Hono()
 
@@ -19,6 +20,7 @@ app.use(
 
 // Routes
 app.route('/auth', authRoutes)
+app.route('/arrathons', arrathonRoutes)
 
 // Health check with DB ping
 app.get('/health', async (c) => {
