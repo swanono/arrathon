@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react'
-import { View, Text, FlatList, Pressable, StyleSheet, ActivityIndicator } from 'react-native'
+import { View, Text, FlatList, Pressable, StyleSheet, ActivityIndicator, Share } from 'react-native'
 import { router } from 'expo-router'
-import { getMyArrathons, type ArrathonSummary } from '../../src/api/arrathon.api'
+import { getMyArrathons, getArrathon, type ArrathonSummary } from '../../src/api/arrathon.api'
 import { useTheme } from '../../src/theme'
 
 export default function HomeScreen() {
@@ -9,6 +9,11 @@ export default function HomeScreen() {
   const styles = makeStyles(theme)
   const [arrathons, setArrathons] = useState<ArrathonSummary[]>([])
   const [loading, setLoading] = useState(true)
+
+  async function handleShare(id: string) {
+    const arrathon = await getArrathon(id)
+    await Share.share({ message: `arrathon://join/${arrathon.inviteToken}` })
+  }
 
   useEffect(() => {
     getMyArrathons()
@@ -48,6 +53,11 @@ export default function HomeScreen() {
                 </View>
               </View>
               <Text style={styles.cardDate}>{item.date}</Text>
+              {item.role === 'organisator' && (
+                <Pressable onPress={() => handleShare(item.id)} style={styles.shareBtn}>
+                  <Text style={styles.shareBtnText}>Inviter des participants</Text>
+                </Pressable>
+              )}
             </View>
           )}
         />
@@ -138,6 +148,15 @@ function makeStyles(theme: ReturnType<typeof useTheme>) {
       fontSize: theme.typography.size.xs,
       fontWeight: theme.typography.weight.medium,
       color: theme.colors.white,
+    },
+    shareBtn: {
+      marginTop: theme.spacing.xs,
+      alignSelf: 'flex-start',
+    },
+    shareBtnText: {
+      fontSize: theme.typography.size.xs,
+      color: theme.colors.primary,
+      fontWeight: theme.typography.weight.medium,
     },
   })
 }

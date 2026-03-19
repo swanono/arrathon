@@ -1,6 +1,7 @@
 import { randomUUID } from 'crypto'
-import { eq } from 'drizzle-orm'
-import { db, arrathons, userArrathon } from '@arrathon/db'
+import { eq, and } from 'drizzle-orm'
+import { db, arrathons, userArrathon, users } from '@arrathon/db'
+import { DomainError } from '../../domain/errors/domain-error'
 
 export async function createArrathon(userId: string, input: { name: string; date: string }) {
   const [arrathon] = await db
@@ -20,6 +21,36 @@ export async function createArrathon(userId: string, input: { name: string; date
   })
 
   return arrathon!
+}
+
+export async function getArrathon(arrathonId: string, userId: string) {
+  const [membership] = await db
+    .select()
+    .from(userArrathon)
+    .where(and(eq(userArrathon.arrathonId, arrathonId), eq(userArrathon.userId, userId)))
+
+  if (!membership) throw new DomainError('FORBIDDEN', 403, 'Not a member')
+
+  const [arrathon] = await db.select().from(arrathons).where(eq(arrathons.id, arrathonId))
+  if (!arrathon) throw new DomainError('NOT_FOUND', 404)
+
+  return { ...arrathon, role: membership.role }
+}
+
+export async function joinByToken(token: string, userId: string) {
+  const [arrathon] = await db.select().from(arrathons).where(eq(arrathons.inviteToken, token))
+  if (!arrathon) throw new DomainError('INVITE_INVALID', 404, 'Invalid invite token')
+
+  const [existing] = await db
+    .select()
+    .from(userArrathon)
+    .where(and(eq(userArrathon.arrathonId, arrathon.id), eq(userArrathon.userId, userId)))
+
+  if (!existing) {
+    await db.insert(userArrathon).values({ userId, arrathonId: arrathon.id, role: 'participant' })
+  }
+
+  return arrathon
 }
 
 export async function getMyArrathons(userId: string) {

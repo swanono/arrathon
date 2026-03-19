@@ -24,3 +24,15 @@ export async function createArrathon(input: { name: string; date: string }): Pro
   const json = await res.json() as { data: ArrathonSummary }
   return json.data
 }
+
+export async function getArrathon(id: string): Promise<ArrathonSummary & { inviteToken: string }> {
+  const res = await apiFetch(`/arrathons/${id}`)
+  if (!res.ok) throw new Error('Failed to fetch arrathon')
+  const json = await res.json() as { data: ArrathonSummary & { inviteToken: string } }
+  return json.data
+}
+
+export async function joinArrathon(token: string): Promise<void> {
+  const res = await apiFetch(`/arrathons/join/${token}`, { method: 'POST' })
+  if (!res.ok) throw new Error('Failed to join arrathon')
+}
