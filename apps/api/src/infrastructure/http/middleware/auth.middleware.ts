@@ -8,7 +8,7 @@ export async function authMiddleware(c: Context<{ Variables: { userId: string } 
     throw new DomainError('UNAUTHORIZED', 401, 'Missing token')
   }
   try {
-    const payload = await verify(auth.slice(7), process.env.JWT_SECRET!)
+    const payload = await verify(auth.slice(7), process.env.JWT_SECRET!, 'HS256')
     c.set('userId', payload.sub as string)
   } catch {
     throw new DomainError('UNAUTHORIZED', 401, 'Invalid token')

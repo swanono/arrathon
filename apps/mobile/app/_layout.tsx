@@ -22,6 +22,7 @@ export default function RootLayout() {
           SecureStore.deleteItemAsync('refresh_token'),
           SecureStore.deleteItemAsync('auth_user'),
         ])
+        router.replace('/(auth)/login')
       }
     })
   }, [])

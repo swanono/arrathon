@@ -1,8 +1,11 @@
 import { apiFetch } from './client'
 
+const BASE_URL = process.env.EXPO_PUBLIC_API_URL ?? 'http://localhost:3000'
+
 export async function refreshToken(token: string): Promise<{ accessToken: string }> {
-  const res = await apiFetch('/auth/refresh', {
+  const res = await fetch(`${BASE_URL}/auth/refresh`, {
     method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify({ refreshToken: token }),
   })
 

@@ -23,7 +23,9 @@ export default function CreateArrathonScreen() {
       setNameError('Le nom est requis')
       valid = false
     }
-    if (!date.match(/^\d{4}-\d{2}-\d{2}$/)) {
+    const dateMatch = date.match(/^\d{4}-\d{2}-\d{2}$/)
+    const parsedDate = dateMatch ? new Date(date) : null
+    if (!dateMatch || !parsedDate || isNaN(parsedDate.getTime())) {
       setDateError('Format requis : AAAA-MM-JJ')
       valid = false
     }
@@ -35,7 +37,7 @@ export default function CreateArrathonScreen() {
     setLoading(true)
     try {
       await createArrathon({ name: name.trim(), date })
-      router.replace('/(app)')
+      router.back()
     } catch {
       setNameError('Erreur lors de la création')
     } finally {

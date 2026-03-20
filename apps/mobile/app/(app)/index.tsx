@@ -1,6 +1,6 @@
-import { useEffect, useState } from 'react'
+import { useState, useCallback } from 'react'
 import { View, Text, FlatList, Pressable, StyleSheet, ActivityIndicator, Share } from 'react-native'
-import { router } from 'expo-router'
+import { router, useFocusEffect } from 'expo-router'
 import { getMyArrathons, getArrathon, type ArrathonSummary } from '../../src/api/arrathon.api'
 import { useTheme } from '../../src/theme'
 
@@ -9,17 +9,23 @@ export default function HomeScreen() {
   const styles = makeStyles(theme)
   const [arrathons, setArrathons] = useState<ArrathonSummary[]>([])
   const [loading, setLoading] = useState(true)
+  const [fetchError, setFetchError] = useState('')
 
   async function handleShare(id: string) {
     const arrathon = await getArrathon(id)
     await Share.share({ message: `arrathon://join/${arrathon.inviteToken}` })
   }
 
-  useEffect(() => {
-    getMyArrathons()
-      .then(setArrathons)
-      .finally(() => setLoading(false))
-  }, [])
+  useFocusEffect(
+    useCallback(() => {
+      setLoading(true)
+      setFetchError('')
+      getMyArrathons()
+        .then(setArrathons)
+        .catch((e) => setFetchError(e?.message ?? 'Erreur inconnue'))
+        .finally(() => setLoading(false))
+    }, [])
+  )
 
   return (
     <View style={styles.container}>
@@ -35,6 +41,8 @@ export default function HomeScreen() {
 
       {loading ? (
         <ActivityIndicator color={theme.colors.primary} style={styles.loader} />
+      ) : fetchError ? (
+        <Text style={styles.empty}>Erreur : {fetchError}</Text>
       ) : arrathons.length === 0 ? (
         <Text style={styles.empty}>Aucun arrathon pour l'instant</Text>
       ) : (
