@@ -17,6 +17,7 @@ export function createGoogleAuthUrl(platform: string = 'web'): { url: URL; encod
   const codeVerifier = generateCodeVerifier()
   const encodedState = Buffer.from(JSON.stringify({ s: rawState, p: platform })).toString('base64url')
   const url = getGoogleClient().createAuthorizationURL(encodedState, codeVerifier, ['openid', 'profile', 'email'])
+  url.searchParams.set('prompt', 'select_account')
   return { url, encodedState, codeVerifier }
 }
 
