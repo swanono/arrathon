@@ -25,7 +25,27 @@ app.route('/arrathons', arrathonRoutes)
 // Public invite redirect — no auth required
 app.get('/join/:token', (c) => {
   const token = c.req.param('token')
-  return c.redirect(`arrathon://join/${token}`)
+  const deepLink = `arrathon://join/${token}`
+  return c.html(`<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Rejoindre l'arrathon</title>
+  <style>
+    body { font-family: sans-serif; display: flex; flex-direction: column; align-items: center; justify-content: center; min-height: 100vh; margin: 0; background: #f5f5f5; color: #1a1a2e; }
+    h1 { font-size: 1.5rem; margin-bottom: 0.5rem; }
+    p { color: #666; margin-bottom: 2rem; text-align: center; padding: 0 1rem; }
+    a { background: #4CAF50; color: white; padding: 0.875rem 2rem; border-radius: 8px; text-decoration: none; font-weight: 600; }
+  </style>
+  <script>window.location.href = "${deepLink}"</script>
+</head>
+<body>
+  <h1>🍺 Arrathon</h1>
+  <p>Tu as été invité à rejoindre un arrathon.<br>Ouvre l'app pour accepter l'invitation.</p>
+  <a href="${deepLink}">Ouvrir l'app</a>
+</body>
+</html>`)
 })
 
 // Health check with DB ping

@@ -32,9 +32,11 @@ export async function getArrathon(id: string): Promise<ArrathonSummary & { invit
   return json.data
 }
 
-export async function joinArrathon(token: string): Promise<void> {
+export async function joinArrathon(token: string): Promise<{ alreadyMember: boolean; arrathon: { name: string } }> {
   const res = await apiFetch(`/arrathons/join/${token}`, { method: 'POST' })
   if (!res.ok) throw new Error('Failed to join arrathon')
+  const json = await res.json() as { data: { alreadyMember: boolean; arrathon: { name: string } } }
+  return json.data
 }
 
 export type Participant = {

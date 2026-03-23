@@ -37,7 +37,7 @@ export async function getArrathon(arrathonId: string, userId: string) {
   return { ...arrathon, role: membership.role }
 }
 
-export async function joinByToken(token: string, userId: string) {
+export async function joinByToken(token: string, userId: string): Promise<{ arrathon: typeof arrathons.$inferSelect; alreadyMember: boolean }> {
   const [arrathon] = await db.select().from(arrathons).where(eq(arrathons.inviteToken, token))
   if (!arrathon) throw new DomainError('INVITE_INVALID', 404, 'Invalid invite token')
 
@@ -50,7 +50,7 @@ export async function joinByToken(token: string, userId: string) {
     await db.insert(userArrathon).values({ userId, arrathonId: arrathon.id, role: 'participant' })
   }
 
-  return arrathon
+  return { arrathon, alreadyMember: !!existing }
 }
 
 export async function getParticipants(arrathonId: string, userId: string) {

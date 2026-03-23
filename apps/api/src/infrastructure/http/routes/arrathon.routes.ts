@@ -42,6 +42,6 @@ arrathonRoutes.get('/:id/participants', async (c) => {
 
 arrathonRoutes.post('/join/:token', async (c) => {
   const userId = c.get('userId')
-  const arrathon = await joinByToken(c.req.param('token'), userId)
-  return c.json({ data: arrathon })
+  const { arrathon, alreadyMember } = await joinByToken(c.req.param('token'), userId)
+  return c.json({ data: { arrathon, alreadyMember } })
 })

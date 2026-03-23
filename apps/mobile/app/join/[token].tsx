@@ -1,7 +1,8 @@
-import { useEffect, useState } from 'react'
-import { View, Text, StyleSheet, ActivityIndicator } from 'react-native'
+import { useEffect } from 'react'
+import { View, ActivityIndicator, StyleSheet } from 'react-native'
 import { useLocalSearchParams, router } from 'expo-router'
 import * as SecureStore from 'expo-secure-store'
+import { toast } from 'sonner-native'
 import { useAuthStore } from '../../src/stores/use-auth-store'
 import { joinArrathon } from '../../src/api/arrathon.api'
 import { useTheme } from '../../src/theme'
@@ -10,7 +11,6 @@ export default function JoinScreen() {
   const theme = useTheme()
   const { token } = useLocalSearchParams<{ token: string }>()
   const accessToken = useAuthStore((s) => s.accessToken)
-  const [error, setError] = useState('')
 
   useEffect(() => {
     if (!token) return
@@ -23,24 +23,23 @@ export default function JoinScreen() {
     }
 
     joinArrathon(token)
-      .then(() => router.replace('/(app)'))
-      .catch(() => setError('Lien d\'invitation invalide ou expiré'))
+      .then(({ alreadyMember, arrathon }) => {
+        if (alreadyMember) {
+          toast.warning('Vous êtes déjà membre de cet arrathon')
+        } else {
+          toast.success(`Vous avez rejoint "${arrathon.name}" !`)
+        }
+        router.replace('/(app)')
+      })
+      .catch(() => {
+        toast.error('Lien d\'invitation invalide ou expiré')
+        router.replace('/(app)')
+      })
   }, [token, accessToken])
 
-  const styles = makeStyles(theme)
-
-  if (error) {
-    return (
-      <View style={styles.container}>
-        <Text style={styles.error}>{error}</Text>
-      </View>
-    )
-  }
-
   return (
-    <View style={styles.container}>
+    <View style={makeStyles(theme).container}>
       <ActivityIndicator size='large' color={theme.colors.primary} />
-      <Text style={styles.label}>Rejoindre l'arrathon...</Text>
     </View>
   )
 }
