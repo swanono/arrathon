@@ -38,12 +38,12 @@ app.get('/join/:token', (c) => {
     p { color: #666; margin-bottom: 2rem; text-align: center; padding: 0 1rem; }
     a { background: #4CAF50; color: white; padding: 0.875rem 2rem; border-radius: 8px; text-decoration: none; font-weight: 600; }
   </style>
-  <script>window.location.href = "${deepLink}"</script>
 </head>
 <body>
   <h1>🍺 Arrathon</h1>
   <p>Tu as été invité à rejoindre un arrathon.<br>Ouvre l'app pour accepter l'invitation.</p>
   <a href="${deepLink}">Ouvrir l'app</a>
+  <script>setTimeout(() => { window.location.href = "${deepLink}" }, 500)</script>
 </body>
 </html>`)
 })
