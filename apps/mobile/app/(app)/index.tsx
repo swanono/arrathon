@@ -13,7 +13,8 @@ export default function HomeScreen() {
 
   async function handleShare(id: string) {
     const arrathon = await getArrathon(id)
-    await Share.share({ message: `arrathon://join/${arrathon.inviteToken}` })
+    const url = `${process.env.EXPO_PUBLIC_API_URL ?? 'http://localhost:3000'}/join/${arrathon.inviteToken}`
+    await Share.share({ message: url })
   }
 
   useFocusEffect(

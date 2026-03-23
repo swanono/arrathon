@@ -22,6 +22,12 @@ app.use(
 app.route('/auth', authRoutes)
 app.route('/arrathons', arrathonRoutes)
 
+// Public invite redirect — no auth required
+app.get('/join/:token', (c) => {
+  const token = c.req.param('token')
+  return c.redirect(`arrathon://join/${token}`)
+})
+
 // Health check with DB ping
 app.get('/health', async (c) => {
   await db.select().from(users).limit(1)
