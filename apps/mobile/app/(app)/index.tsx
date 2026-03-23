@@ -55,11 +55,11 @@ export default function HomeScreen() {
             <Pressable style={styles.card} onPress={() => router.push(`/arrathon/${item.id}` as never)}>
               <View style={styles.cardRow}>
                 <Text style={styles.cardName}>{item.name}</Text>
-                <View style={[styles.badge, item.role === 'organisator' && styles.badgeOrga]}>
-                  <Text style={styles.badgeText}>
-                    {item.role === 'organisator' ? 'Orga' : 'Participant'}
-                  </Text>
-                </View>
+                {item.role === 'organisator' && (
+                  <View style={styles.badge}>
+                    <Text style={styles.badgeText}>Orga</Text>
+                  </View>
+                )}
               </View>
               <Text style={styles.cardDate}>{item.date}</Text>
               {item.role === 'organisator' && (
@@ -145,13 +145,10 @@ function makeStyles(theme: ReturnType<typeof useTheme>) {
       color: theme.colors.navyMuted,
     },
     badge: {
-      backgroundColor: theme.colors.border,
+      backgroundColor: theme.colors.primary,
       paddingVertical: 2,
       paddingHorizontal: theme.spacing.sm,
       borderRadius: theme.borderRadius.sm,
-    },
-    badgeOrga: {
-      backgroundColor: theme.colors.primary,
     },
     badgeText: {
       fontSize: theme.typography.size.xs,

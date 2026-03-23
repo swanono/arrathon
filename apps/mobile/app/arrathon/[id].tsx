@@ -57,11 +57,11 @@ export default function ArrathonScreen() {
               </View>
             )}
             <Text style={styles.participantName}>{item.name} {item.familyName}</Text>
-            <View style={[styles.badge, item.role === 'organisator' && styles.badgeOrga]}>
-              <Text style={styles.badgeText}>
-                {item.role === 'organisator' ? 'Orga' : 'Participant'}
-              </Text>
-            </View>
+            {item.role === 'organisator' && (
+              <View style={styles.badge}>
+                <Text style={styles.badgeText}>Orga</Text>
+              </View>
+            )}
           </View>
         )}
       />
@@ -144,13 +144,10 @@ function makeStyles(theme: ReturnType<typeof useTheme>) {
       fontWeight: theme.typography.weight.medium,
     },
     badge: {
-      backgroundColor: theme.colors.border,
+      backgroundColor: theme.colors.primary,
       paddingVertical: 2,
       paddingHorizontal: theme.spacing.sm,
       borderRadius: theme.borderRadius.sm,
-    },
-    badgeOrga: {
-      backgroundColor: theme.colors.primary,
     },
     badgeText: {
       fontSize: theme.typography.size.xs,
