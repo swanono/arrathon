@@ -32,7 +32,7 @@ export default function ArrathonScreen() {
 
   return (
     <View style={styles.container}>
-      <Pressable onPress={() => router.back()} style={styles.back}>
+      <Pressable onPress={() => router.canGoBack() ? router.back() : router.replace('/(app)')} style={styles.back}>
         <Text style={styles.backText}>← Retour</Text>
       </Pressable>
 

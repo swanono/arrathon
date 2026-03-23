@@ -1,6 +1,8 @@
 import { useState } from 'react'
-import { View, Text, TextInput, Pressable, StyleSheet, ActivityIndicator } from 'react-native'
+import { View, Text, TextInput, Pressable, StyleSheet, ActivityIndicator, Platform } from 'react-native'
 import { router } from 'expo-router'
+import DateTimePicker from '@react-native-community/datetimepicker'
+import { toast } from 'sonner-native'
 import { createArrathon } from '../../src/api/arrathon.api'
 import { useTheme } from '../../src/theme'
 
@@ -9,37 +11,37 @@ export default function CreateArrathonScreen() {
   const styles = makeStyles(theme)
 
   const [name, setName] = useState('')
-  const [date, setDate] = useState('')
+  const [date, setDate] = useState<Date>(new Date())
+  const [showPicker, setShowPicker] = useState(false)
   const [nameError, setNameError] = useState('')
-  const [dateError, setDateError] = useState('')
   const [loading, setLoading] = useState(false)
 
-  function validate() {
-    let valid = true
-    setNameError('')
-    setDateError('')
+  function formatDate(d: Date): string {
+    return d.toISOString().split('T')[0]!
+  }
 
+  function formatDateDisplay(d: Date): string {
+    return d.toLocaleDateString('fr-FR', { day: '2-digit', month: 'long', year: 'numeric' })
+  }
+
+  function validate() {
     if (!name.trim()) {
       setNameError('Le nom est requis')
-      valid = false
+      return false
     }
-    const dateMatch = date.match(/^\d{4}-\d{2}-\d{2}$/)
-    const parsedDate = dateMatch ? new Date(date) : null
-    if (!dateMatch || !parsedDate || isNaN(parsedDate.getTime())) {
-      setDateError('Format requis : AAAA-MM-JJ')
-      valid = false
-    }
-    return valid
+    setNameError('')
+    return true
   }
 
   async function handleSubmit() {
     if (!validate()) return
     setLoading(true)
     try {
-      await createArrathon({ name: name.trim(), date })
-      router.back()
+      const arrathon = await createArrathon({ name: name.trim(), date: formatDate(date) })
+      toast.success('Arrathon créé !', { description: arrathon.name })
+      router.replace(`/arrathon/${arrathon.id}` as never)
     } catch {
-      setNameError('Erreur lors de la création')
+      toast.error('Erreur lors de la création')
     } finally {
       setLoading(false)
     }
@@ -62,16 +64,22 @@ export default function CreateArrathonScreen() {
       </View>
 
       <View style={styles.field}>
-        <Text style={styles.label}>Date * (AAAA-MM-JJ)</Text>
-        <TextInput
-          style={[styles.input, dateError ? styles.inputError : null]}
-          value={date}
-          onChangeText={setDate}
-          placeholder='Ex: 2026-06-21'
-          placeholderTextColor={theme.colors.navyMuted}
-          keyboardType='numeric'
-        />
-        {dateError ? <Text style={styles.error}>{dateError}</Text> : null}
+        <Text style={styles.label}>Date *</Text>
+        <Pressable style={styles.dateBtn} onPress={() => setShowPicker(true)}>
+          <Text style={styles.dateBtnText}>{formatDateDisplay(date)}</Text>
+        </Pressable>
+        {(showPicker || Platform.OS === 'ios') && (
+          <DateTimePicker
+            value={date}
+            mode='date'
+            display={Platform.OS === 'ios' ? 'spinner' : 'default'}
+            minimumDate={new Date()}
+            onChange={(_, selected) => {
+              setShowPicker(false)
+              if (selected) setDate(selected)
+            }}
+          />
+        )}
       </View>
 
       <Pressable
@@ -129,6 +137,17 @@ function makeStyles(theme: ReturnType<typeof useTheme>) {
     error: {
       fontSize: theme.typography.size.xs,
       color: theme.colors.error,
+    },
+    dateBtn: {
+      borderWidth: 1,
+      borderColor: theme.colors.border,
+      borderRadius: theme.borderRadius.sm,
+      padding: theme.spacing.md,
+      backgroundColor: theme.colors.surface,
+    },
+    dateBtnText: {
+      fontSize: theme.typography.size.md,
+      color: theme.colors.navy,
     },
     button: {
       backgroundColor: theme.colors.primary,
