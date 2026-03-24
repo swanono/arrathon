@@ -41,6 +41,20 @@ export async function joinArrathon(token: string): Promise<{ alreadyMember: bool
 
 export type LocationType = 'bar' | 'apartment' | 'monument' | 'pit_stand'
 
+export type GoogleData = {
+  phone?: string
+  openingHours?: string[]
+  websiteUri?: string
+  rating?: number
+  suggestedType?: LocationType
+}
+
+export type LocationMetadata = {
+  note?: string
+  entryCode?: string
+  floor?: string
+}
+
 export type ArrathonLocation = {
   id: string
   locationId: string
@@ -48,6 +62,8 @@ export type ArrathonLocation = {
   address: string | null
   type: LocationType
   orderPosition: number
+  googleData?: GoogleData
+  metadata?: LocationMetadata
 }
 
 export type PlaceSuggestion = {
@@ -64,6 +80,7 @@ export type PlaceDetails = {
   lat: number
   lng: number
   suggestedType: LocationType
+  googleData: GoogleData
 }
 
 export async function searchPlaces(query: string, sessionToken: string): Promise<PlaceSuggestion[]> {
@@ -92,6 +109,7 @@ export async function addLocation(arrathonId: string, input: {
   name: string
   address: string
   type: LocationType
+  metadata?: LocationMetadata
 }): Promise<ArrathonLocation> {
   const res = await apiFetch(`/arrathons/${arrathonId}/locations`, {
     method: 'POST',

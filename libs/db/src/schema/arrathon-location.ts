@@ -1,4 +1,10 @@
-import { pgTable, uuid, integer, timestamp, pgEnum, unique } from 'drizzle-orm/pg-core'
+import { pgTable, uuid, integer, timestamp, pgEnum, unique, jsonb } from 'drizzle-orm/pg-core'
+
+type LocationMetadata = {
+  note?: string
+  entryCode?: string
+  floor?: string
+}
 import { arrathons } from './arrathons'
 import { locations } from './locations'
 
@@ -22,6 +28,7 @@ export const arrathonLocation = pgTable(
     orderPosition: integer('order_position').notNull(),
     duration: integer('duration'),
     type: locationTypeEnum('type').notNull(),
+    metadata: jsonb('metadata').$type<LocationMetadata>(),
     createdAt: timestamp('created_at').defaultNow().notNull(),
   },
   (table) => [

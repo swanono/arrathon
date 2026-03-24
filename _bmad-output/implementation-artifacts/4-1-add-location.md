@@ -1,6 +1,6 @@
 # Story 4.1: Add a Location to the Itinerary
 
-Status: in-progress
+Status: in-progress (tasks 1-7 done, tasks 8-11 pending)
 
 ## Story
 
@@ -19,24 +19,24 @@ So that participants know where the group is heading at each step.
 
 ## Tasks / Subtasks
 
-- [ ] Task 1: DB — add Google Places cache columns to locations
+- [x] Task 1: DB — add Google Places cache columns to locations
   - [ ] Add `google_place_id varchar(255) UNIQUE` to `locations` schema
   - [ ] Add `google_fetched_at timestamp` to `locations` schema
   - [ ] Run `drizzle-kit generate && drizzle-kit migrate`
 
-- [ ] Task 2: API — Google Places service (with cache)
+- [x] Task 2: API — Google Places service (with cache)
   - [ ] Create `apps/api/src/application/places/places.service.ts`
   - [ ] `searchPlaces(query, sessionToken)` — calls Google Places Autocomplete API, returns suggestions list
   - [ ] `getPlaceDetails(placeId, sessionToken)` — checks DB cache first (`google_place_id` + `google_fetched_at < 30 days`), calls Google Places Details API only if cache miss, stores result in `locations` table
   - [ ] Session token passed through from mobile to group autocomplete + detail into 1 billing unit
 
-- [ ] Task 3: API — places routes (public search, no arrathon membership needed)
+- [x] Task 3: API — places routes (public search, no arrathon membership needed)
   - [ ] Create `apps/api/src/infrastructure/http/routes/places.routes.ts`
   - [ ] `GET /places/search?q=...&sessionToken=...` — autocomplete suggestions
   - [ ] `GET /places/details/:placeId?sessionToken=...` — place details with cache
   - [ ] Register in `apps/api/src/index.ts` with `authMiddleware`
 
-- [ ] Task 4: API — locations service + routes
+- [x] Task 4: API — locations service + routes
   - [ ] Create `apps/api/src/application/locations/location.service.ts`
   - [ ] `addLocation(arrathonId, userId, input)` — organiser role check, reuse cached location if `google_place_id` already exists, else insert new, insert `arrathon_location` with next `order_position`
   - [ ] `getLocations(arrathonId, userId)` — membership check, return ordered list
@@ -44,7 +44,7 @@ So that participants know where the group is heading at each step.
     - `POST /arrathons/:id/locations`
     - `GET /arrathons/:id/locations`
 
-- [ ] Task 5: Mobile — places + locations API client
+- [x] Task 5: Mobile — places + locations API client
   - [ ] Add to `apps/mobile/src/api/arrathon.api.ts`:
     - Types: `Location`, `LocationType`, `PlaceSuggestion`
     - `searchPlaces(query, sessionToken)`
@@ -52,20 +52,44 @@ So that participants know where the group is heading at each step.
     - `getLocations(arrathonId)`
     - `addLocation(arrathonId, input)`
 
-- [ ] Task 6: Mobile — locations list in dashboard
-  - [ ] Update `app/arrathon/[id].tsx` — show locations section above participants
-  - [ ] Each location: type icon + name + address
-  - [ ] "Ajouter un lieu" button visible only for role `organisator`
-  - [ ] `useFocusEffect` to refresh on return
+- [x] Task 6: Mobile — locations list in dashboard
+  - [x] Update `app/arrathon/[id]/index.tsx` — show locations section above participants
+  - [x] Each location: type icon + name + address
+  - [x] "Ajouter un lieu" button visible only for role `organisator`
+  - [x] `useFocusEffect` to refresh on return
 
-- [ ] Task 7: Mobile — add location screen with Places autocomplete
-  - [ ] Create `app/arrathon/[id]/add-location.tsx`
-  - [ ] TextInput with debounce 300ms → calls `searchPlaces`
-  - [ ] Generate `sessionToken = randomUUID()` at screen mount (groups all keystrokes + detail call)
-  - [ ] Suggestions list below input
-  - [ ] On select: calls `getPlaceDetails` (same sessionToken), pre-fills name + address + type
-  - [ ] Type selector: bar / apartment / monument / pit_stand (can override Google's suggestion)
-  - [ ] Submit → `addLocation` → toast success → `router.back()`
+- [x] Task 7: Mobile — add location screen with Places autocomplete
+  - [x] Create `app/arrathon/[id]/add-location.tsx`
+  - [x] TextInput with debounce 300ms → calls `searchPlaces`
+  - [x] Generate `sessionToken = UUID v4 (Math.random)` at screen mount
+  - [x] Suggestions list below input
+  - [x] On select: calls `getPlaceDetails` (same sessionToken), pre-fills name + address + type
+  - [x] Type selector: bar / apartment / monument / pit_stand
+  - [x] Submit → `addLocation` → toast success → `router.back()`
+
+- [ ] Task 8: UX — autocomplete minimum threshold
+  - [ ] In `add-location.tsx`: do not call `searchPlaces` if `query.trim().length < 3`
+  - [ ] Clear suggestions if query drops below threshold
+
+- [ ] Task 9: DB — extended metadata columns
+  - [ ] Add `google_data jsonb` to `locations` schema — stores: `phone`, `openingHours`, `websiteUri`, `rating` fetched from Google
+  - [ ] Add `metadata jsonb` to `arrathon_location` schema — stores organiser-entered data: `note`, `entryCode`, `floor` (apartment), free-form per type
+  - [ ] Run `drizzle-kit generate && drizzle-kit migrate`
+
+- [ ] Task 10: API — fetch and store extended Google data
+  - [ ] Expand `FieldMask` in `getPlaceDetails` to include `regularOpeningHours,nationalPhoneNumber,websiteUri,rating`
+  - [ ] Map and store into `locations.google_data` jsonb on insert/upsert
+  - [ ] Return `googleData` in `PlaceDetails` response type
+  - [ ] Update `addLocation` input type to accept optional `metadata` jsonb
+  - [ ] Store `metadata` on `arrathon_location` insert
+
+- [ ] Task 11: Mobile — metadata fields in add-location screen
+  - [ ] After type selection, show context-specific metadata fields:
+    - `bar` / `pit_stand`: pre-fill opening hours + phone from Google if available (read-only display), `note` free text
+    - `apartment`: `entryCode` text input, `floor` text input, `note` free text
+    - `monument`: `note` free text
+  - [ ] Pass `metadata` to `addLocation` API call
+  - [ ] Update `addLocation` type in `arrathon.api.ts`
 
 ## Dev Notes
 
@@ -87,12 +111,25 @@ So that participants know where the group is heading at each step.
 
 **Autocomplete caching:**
 - Debounce 300ms on mobile (reduce calls while typing)
+- Minimum 3 characters before triggering autocomplete (avoids calls on "L", "Le"...)
 - No server-side cache for autocomplete (results are query + location specific)
 
 ### Google Places API calls used
 - `POST https://places.googleapis.com/v1/places:autocomplete` (new Places API v1)
 - `GET https://places.googleapis.com/v1/places/:placeId` (new Places API v1)
-- Fields requested for details: `id,displayName,formattedAddress,location,types`
+- Fields requested for details: `id,displayName,formattedAddress,location,types,regularOpeningHours,nationalPhoneNumber,websiteUri,rating`
+
+### Metadata schema (jsonb)
+
+`locations.google_data`:
+```json
+{ "phone": "+33...", "openingHours": ["Lundi: 9h–18h", ...], "websiteUri": "...", "rating": 4.2 }
+```
+
+`arrathon_location.metadata`:
+```json
+{ "note": "sonner 3 fois", "entryCode": "A1234", "floor": "3ème" }
+```
 
 ### Location types mapping
 Google Places types → arrathon `location_type` enum:

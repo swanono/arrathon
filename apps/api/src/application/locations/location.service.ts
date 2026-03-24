@@ -4,11 +4,18 @@ import { DomainError } from '../../domain/errors/domain-error'
 
 type LocationType = 'bar' | 'apartment' | 'monument' | 'pit_stand'
 
+type LocationMetadata = {
+  note?: string
+  entryCode?: string
+  floor?: string
+}
+
 type AddLocationInput = {
   googlePlaceId: string
   name: string
   address: string
   type: LocationType
+  metadata?: LocationMetadata
 }
 
 export async function addLocation(arrathonId: string, userId: string, input: AddLocationInput) {
@@ -52,6 +59,7 @@ export async function addLocation(arrathonId: string, userId: string, input: Add
       locationId,
       orderPosition: nextPosition,
       type: input.type,
+      metadata: input.metadata,
     })
     .returning()
 

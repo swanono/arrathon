@@ -11,6 +11,14 @@ type PlaceSuggestion = {
   secondaryText: string
 }
 
+type GoogleData = {
+  phone?: string
+  openingHours?: string[]
+  websiteUri?: string
+  rating?: number
+  suggestedType?: 'bar' | 'apartment' | 'monument' | 'pit_stand'
+}
+
 type PlaceDetails = {
   googlePlaceId: string
   name: string
@@ -18,6 +26,7 @@ type PlaceDetails = {
   lat: number
   lng: number
   suggestedType: 'bar' | 'apartment' | 'monument' | 'pit_stand'
+  googleData: GoogleData
 }
 
 function mapGoogleTypesToLocationType(types: string[]): PlaceDetails['suggestedType'] {
@@ -78,13 +87,15 @@ export async function getPlaceDetails(placeId: string, sessionToken: string): Pr
     const ageMs = Date.now() - cached[0].googleFetchedAt.getTime()
     const ageDays = ageMs / (1000 * 60 * 60 * 24)
     if (ageDays < CACHE_TTL_DAYS) {
+      const gd = (cached[0].googleData ?? {}) as GoogleData
       return {
         googlePlaceId: placeId,
         name: cached[0].name,
         address: cached[0].address ?? '',
         lat: 0,
         lng: 0,
-        suggestedType: 'bar',
+        suggestedType: gd.suggestedType ?? 'bar',
+        googleData: gd,
       }
     }
   }
@@ -93,7 +104,7 @@ export async function getPlaceDetails(placeId: string, sessionToken: string): Pr
   const res = await fetch(`${PLACES_API_BASE}/places/${placeId}?sessionToken=${sessionToken}`, {
     headers: {
       'X-Goog-Api-Key': apiKey,
-      'X-Goog-FieldMask': 'id,displayName,formattedAddress,location,types',
+      'X-Goog-FieldMask': 'id,displayName,formattedAddress,location,types,nationalPhoneNumber,regularOpeningHours,websiteUri,rating',
     },
   })
 
@@ -105,6 +116,19 @@ export async function getPlaceDetails(placeId: string, sessionToken: string): Pr
     formattedAddress: string
     location: { latitude: number; longitude: number }
     types: string[]
+    nationalPhoneNumber?: string
+    regularOpeningHours?: { weekdayDescriptions: string[] }
+    websiteUri?: string
+    rating?: number
+  }
+
+  const suggestedType = mapGoogleTypesToLocationType(place.types)
+  const googleData: GoogleData = {
+    suggestedType,
+    phone: place.nationalPhoneNumber,
+    openingHours: place.regularOpeningHours?.weekdayDescriptions,
+    websiteUri: place.websiteUri,
+    rating: place.rating,
   }
 
   const now = new Date()
@@ -115,6 +139,7 @@ export async function getPlaceDetails(placeId: string, sessionToken: string): Pr
       address: place.formattedAddress,
       googlePlaceId: place.id,
       googleFetchedAt: now,
+      googleData,
     })
     .onConflictDoUpdate({
       target: locations.googlePlaceId,
@@ -122,6 +147,7 @@ export async function getPlaceDetails(placeId: string, sessionToken: string): Pr
         name: place.displayName.text,
         address: place.formattedAddress,
         googleFetchedAt: now,
+        googleData,
         updatedAt: sql`now()`,
       },
     })
@@ -132,6 +158,7 @@ export async function getPlaceDetails(placeId: string, sessionToken: string): Pr
     address: place.formattedAddress,
     lat: place.location.latitude,
     lng: place.location.longitude,
-    suggestedType: mapGoogleTypesToLocationType(place.types),
+    suggestedType,
+    googleData,
   }
 }

@@ -12,7 +12,7 @@ import {
 } from 'react-native'
 import { useLocalSearchParams, router } from 'expo-router'
 import { toast } from 'sonner-native'
-import { searchPlaces, getPlaceDetails, addLocation, type PlaceSuggestion, type LocationType } from '../../../src/api/arrathon.api'
+import { searchPlaces, getPlaceDetails, addLocation, type PlaceSuggestion, type LocationType, type LocationMetadata, type GoogleData } from '../../../src/api/arrathon.api'
 import { useTheme } from '../../../src/theme'
 
 const LOCATION_TYPES: { value: LocationType; label: string; icon: string }[] = [
@@ -21,6 +21,8 @@ const LOCATION_TYPES: { value: LocationType; label: string; icon: string }[] = [
   { value: 'monument', label: 'Monument', icon: '🏛️' },
   { value: 'pit_stand', label: 'Ravito', icon: '🍕' },
 ]
+
+const MIN_QUERY_LENGTH = 3
 
 export default function AddLocationScreen() {
   const theme = useTheme()
@@ -39,17 +41,22 @@ export default function AddLocationScreen() {
   const [suggestions, setSuggestions] = useState<PlaceSuggestion[]>([])
   const [searching, setSearching] = useState(false)
 
+  const [selectedGooglePlaceId, setSelectedGooglePlaceId] = useState('')
   const [selectedName, setSelectedName] = useState('')
   const [selectedAddress, setSelectedAddress] = useState('')
-  const [selectedGooglePlaceId, setSelectedGooglePlaceId] = useState('')
   const [selectedType, setSelectedType] = useState<LocationType>('bar')
+  const [selectedGoogleData, setSelectedGoogleData] = useState<GoogleData>({})
   const [loadingDetails, setLoadingDetails] = useState(false)
   const [submitting, setSubmitting] = useState(false)
+
+  const [note, setNote] = useState('')
+  const [entryCode, setEntryCode] = useState('')
+  const [floor, setFloor] = useState('')
 
   const handleQueryChange = useCallback((text: string) => {
     setQuery(text)
     if (debounceRef.current) clearTimeout(debounceRef.current)
-    if (!text.trim()) {
+    if (text.trim().length < MIN_QUERY_LENGTH) {
       setSuggestions([])
       return
     }
@@ -71,6 +78,10 @@ export default function AddLocationScreen() {
       setSelectedName(details.name)
       setSelectedAddress(details.address)
       setSelectedType(details.suggestedType)
+      setSelectedGoogleData(details.googleData)
+      setNote('')
+      setEntryCode('')
+      setFloor('')
     } catch {
       toast.error('Impossible de charger les détails du lieu')
     } finally {
@@ -83,6 +94,11 @@ export default function AddLocationScreen() {
       toast.error('Sélectionne un lieu dans la liste')
       return
     }
+    const metadata: LocationMetadata = {}
+    if (note.trim()) metadata.note = note.trim()
+    if (entryCode.trim()) metadata.entryCode = entryCode.trim()
+    if (floor.trim()) metadata.floor = floor.trim()
+
     setSubmitting(true)
     try {
       await addLocation(id, {
@@ -90,6 +106,7 @@ export default function AddLocationScreen() {
         name: selectedName,
         address: selectedAddress,
         type: selectedType,
+        metadata: Object.keys(metadata).length > 0 ? metadata : undefined,
       })
       toast.success('Lieu ajouté !')
       router.back()
@@ -98,13 +115,15 @@ export default function AddLocationScreen() {
     } finally {
       setSubmitting(false)
     }
-  }, [id, selectedGooglePlaceId, selectedName, selectedAddress, selectedType])
+  }, [id, selectedGooglePlaceId, selectedName, selectedAddress, selectedType, note, entryCode, floor])
 
   useEffect(() => {
     return () => {
       if (debounceRef.current) clearTimeout(debounceRef.current)
     }
   }, [])
+
+  const hasLocation = selectedGooglePlaceId !== '' && !loadingDetails
 
   return (
     <KeyboardAvoidingView
@@ -122,7 +141,7 @@ export default function AddLocationScreen() {
         <View style={styles.searchContainer}>
           <TextInput
             style={styles.input}
-            placeholder='Ex: Le Comptoir, Sacré-Coeur...'
+            placeholder='Min. 3 caractères...'
             placeholderTextColor={theme.colors.navyMuted}
             value={query}
             onChangeText={handleQueryChange}
@@ -146,7 +165,7 @@ export default function AddLocationScreen() {
           <ActivityIndicator size='small' color={theme.colors.primary} style={styles.detailsSpinner} />
         )}
 
-        {selectedGooglePlaceId !== '' && !loadingDetails && (
+        {hasLocation && (
           <>
             <Text style={styles.label}>Nom</Text>
             <TextInput
@@ -179,6 +198,56 @@ export default function AddLocationScreen() {
                 </Pressable>
               ))}
             </View>
+
+            {(selectedType === 'bar' || selectedType === 'pit_stand') && (
+              selectedGoogleData.phone || selectedGoogleData.openingHours
+            ) && (
+              <View style={styles.googleDataBox}>
+                {selectedGoogleData.phone && (
+                  <Text style={styles.googleDataText}>📞 {selectedGoogleData.phone}</Text>
+                )}
+                {selectedGoogleData.openingHours && selectedGoogleData.openingHours.length > 0 && (
+                  <>
+                    <Text style={styles.googleDataLabel}>Horaires</Text>
+                    {selectedGoogleData.openingHours.map((h, i) => (
+                      <Text key={i} style={styles.googleDataText}>{h}</Text>
+                    ))}
+                  </>
+                )}
+              </View>
+            )}
+
+            {selectedType === 'apartment' && (
+              <>
+                <Text style={styles.label}>Code d'entrée</Text>
+                <TextInput
+                  style={styles.input}
+                  value={entryCode}
+                  onChangeText={setEntryCode}
+                  placeholder='Ex: A1234'
+                  placeholderTextColor={theme.colors.navyMuted}
+                />
+                <Text style={styles.label}>Étage</Text>
+                <TextInput
+                  style={styles.input}
+                  value={floor}
+                  onChangeText={setFloor}
+                  placeholder='Ex: 3ème'
+                  placeholderTextColor={theme.colors.navyMuted}
+                />
+              </>
+            )}
+
+            <Text style={styles.label}>Note</Text>
+            <TextInput
+              style={[styles.input, styles.inputMultiline]}
+              value={note}
+              onChangeText={setNote}
+              placeholder='Ex: Sonner 3 fois, demander Marie...'
+              placeholderTextColor={theme.colors.navyMuted}
+              multiline
+              numberOfLines={3}
+            />
 
             <Pressable onPress={handleSubmit} style={styles.submitButton} disabled={submitting}>
               {submitting ? (
@@ -243,6 +312,10 @@ function makeStyles(theme: ReturnType<typeof useTheme>) {
       backgroundColor: theme.colors.surface,
       borderRadius: theme.borderRadius.md,
     },
+    inputMultiline: {
+      minHeight: 80,
+      textAlignVertical: 'top',
+    },
     searchSpinner: {
       marginRight: theme.spacing.md,
     },
@@ -300,6 +373,23 @@ function makeStyles(theme: ReturnType<typeof useTheme>) {
     },
     typeLabelActive: {
       color: theme.colors.primary,
+    },
+    googleDataBox: {
+      backgroundColor: theme.colors.surface,
+      borderRadius: theme.borderRadius.md,
+      padding: theme.spacing.md,
+      marginTop: theme.spacing.md,
+      gap: theme.spacing.xs,
+    },
+    googleDataLabel: {
+      fontSize: theme.typography.size.xs,
+      fontWeight: theme.typography.weight.semiBold,
+      color: theme.colors.navyMuted,
+      marginTop: theme.spacing.xs,
+    },
+    googleDataText: {
+      fontSize: theme.typography.size.sm,
+      color: theme.colors.navy,
     },
     submitButton: {
       backgroundColor: theme.colors.primary,

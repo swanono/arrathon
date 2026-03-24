@@ -52,6 +52,11 @@ const locationSchema = z.object({
   name: z.string().min(1),
   address: z.string(),
   type: z.enum(['bar', 'apartment', 'monument', 'pit_stand']),
+  metadata: z.object({
+    note: z.string().optional(),
+    entryCode: z.string().optional(),
+    floor: z.string().optional(),
+  }).optional(),
 })
 
 arrathonRoutes.get('/:id/locations', async (c) => {
