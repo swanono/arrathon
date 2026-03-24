@@ -39,6 +39,69 @@ export async function joinArrathon(token: string): Promise<{ alreadyMember: bool
   return json.data
 }
 
+export type LocationType = 'bar' | 'apartment' | 'monument' | 'pit_stand'
+
+export type ArrathonLocation = {
+  id: string
+  locationId: string
+  name: string
+  address: string | null
+  type: LocationType
+  orderPosition: number
+}
+
+export type PlaceSuggestion = {
+  placeId: string
+  description: string
+  mainText: string
+  secondaryText: string
+}
+
+export type PlaceDetails = {
+  googlePlaceId: string
+  name: string
+  address: string
+  lat: number
+  lng: number
+  suggestedType: LocationType
+}
+
+export async function searchPlaces(query: string, sessionToken: string): Promise<PlaceSuggestion[]> {
+  const res = await apiFetch(`/places/search?q=${encodeURIComponent(query)}&sessionToken=${sessionToken}`)
+  if (!res.ok) return []
+  const json = await res.json() as { data: PlaceSuggestion[] }
+  return json.data
+}
+
+export async function getPlaceDetails(placeId: string, sessionToken: string): Promise<PlaceDetails> {
+  const res = await apiFetch(`/places/details/${placeId}?sessionToken=${sessionToken}`)
+  if (!res.ok) throw new Error('Failed to get place details')
+  const json = await res.json() as { data: PlaceDetails }
+  return json.data
+}
+
+export async function getLocations(arrathonId: string): Promise<ArrathonLocation[]> {
+  const res = await apiFetch(`/arrathons/${arrathonId}/locations`)
+  if (!res.ok) throw new Error('Failed to fetch locations')
+  const json = await res.json() as { data: ArrathonLocation[] }
+  return json.data
+}
+
+export async function addLocation(arrathonId: string, input: {
+  googlePlaceId: string
+  name: string
+  address: string
+  type: LocationType
+}): Promise<ArrathonLocation> {
+  const res = await apiFetch(`/arrathons/${arrathonId}/locations`, {
+    method: 'POST',
+    body: JSON.stringify(input),
+  })
+  if (!res.ok) throw new Error('Failed to add location')
+  const json = await res.json() as { data: ArrathonLocation }
+  return json.data
+}
+
 export type Participant = {
   id: string
   name: string

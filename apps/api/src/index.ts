@@ -5,7 +5,9 @@ import { serve } from '@hono/node-server'
 import { db, users } from '@arrathon/db'
 import { DomainError } from './domain/errors/domain-error'
 import { authRoutes } from './infrastructure/http/routes/auth.routes'
+import { authMiddleware } from './infrastructure/http/middleware/auth.middleware'
 import { arrathonRoutes } from './infrastructure/http/routes/arrathon.routes'
+import { placesRoutes } from './infrastructure/http/routes/places.routes'
 
 const app = new Hono()
 
@@ -21,6 +23,8 @@ app.use(
 // Routes
 app.route('/auth', authRoutes)
 app.route('/arrathons', arrathonRoutes)
+app.use('/places/*', authMiddleware)
+app.route('/places', placesRoutes)
 
 // Public invite redirect — no auth required
 app.get('/join/:token', (c) => {

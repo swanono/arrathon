@@ -3,6 +3,7 @@ import { zValidator } from '@hono/zod-validator'
 import { z } from 'zod'
 import { authMiddleware } from '../middleware/auth.middleware'
 import { createArrathon, getMyArrathons, getArrathon, joinByToken, getParticipants } from '../../../application/arrathons/arrathon.service'
+import { addLocation, getLocations } from '../../../application/locations/location.service'
 
 type Variables = { userId: string }
 
@@ -44,4 +45,24 @@ arrathonRoutes.post('/join/:token', async (c) => {
   const userId = c.get('userId')
   const { arrathon, alreadyMember } = await joinByToken(c.req.param('token'), userId)
   return c.json({ data: { arrathon, alreadyMember } })
+})
+
+const locationSchema = z.object({
+  googlePlaceId: z.string().min(1),
+  name: z.string().min(1),
+  address: z.string(),
+  type: z.enum(['bar', 'apartment', 'monument', 'pit_stand']),
+})
+
+arrathonRoutes.get('/:id/locations', async (c) => {
+  const userId = c.get('userId')
+  const list = await getLocations(c.req.param('id'), userId)
+  return c.json({ data: list })
+})
+
+arrathonRoutes.post('/:id/locations', zValidator('json', locationSchema), async (c) => {
+  const userId = c.get('userId')
+  const body = c.req.valid('json')
+  const location = await addLocation(c.req.param('id'), userId, body)
+  return c.json({ data: location }, 201)
 })

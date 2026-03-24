@@ -14,6 +14,8 @@ export const locations = pgTable('locations', {
   name: varchar('name', { length: 255 }).notNull(),
   address: text('address'),
   coordinates: geography({ type: 'Point', srid: 4326 }),
+  googlePlaceId: varchar('google_place_id', { length: 255 }).unique(),
+  googleFetchedAt: timestamp('google_fetched_at'),
   createdAt: timestamp('created_at').defaultNow().notNull(),
   updatedAt: timestamp('updated_at').defaultNow().notNull(),
 })
