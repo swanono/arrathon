@@ -3,7 +3,7 @@ import { zValidator } from '@hono/zod-validator'
 import { z } from 'zod'
 import { authMiddleware } from '../middleware/auth.middleware'
 import { createArrathon, getMyArrathons, getArrathon, joinByToken, getParticipants } from '../../../application/arrathons/arrathon.service'
-import { addLocation, getLocations } from '../../../application/locations/location.service'
+import { addLocation, getLocations, getLocation, updateLocationMetadata } from '../../../application/locations/location.service'
 
 type Variables = { userId: string }
 
@@ -70,4 +70,25 @@ arrathonRoutes.post('/:id/locations', zValidator('json', locationSchema), async 
   const body = c.req.valid('json')
   const location = await addLocation(c.req.param('id'), userId, body)
   return c.json({ data: location }, 201)
+})
+
+arrathonRoutes.get('/:id/locations/:locationId', async (c) => {
+  const userId = c.get('userId')
+  const location = await getLocation(c.req.param('id'), c.req.param('locationId'), userId)
+  return c.json({ data: location })
+})
+
+const metadataSchema = z.object({
+  metadata: z.object({
+    note: z.string().optional(),
+    entryCode: z.string().optional(),
+    floor: z.string().optional(),
+  }),
+})
+
+arrathonRoutes.patch('/:id/locations/:locationId', zValidator('json', metadataSchema), async (c) => {
+  const userId = c.get('userId')
+  const { metadata } = c.req.valid('json')
+  await updateLocationMetadata(c.req.param('id'), c.req.param('locationId'), userId, metadata)
+  return c.json({ data: { ok: true } })
 })

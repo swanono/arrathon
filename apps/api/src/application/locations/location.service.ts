@@ -1,4 +1,4 @@
-import { eq, max } from 'drizzle-orm'
+import { eq, max, and } from 'drizzle-orm'
 import { db, locations, arrathonLocation, userArrathon } from '@arrathon/db'
 import { DomainError } from '../../domain/errors/domain-error'
 
@@ -16,6 +16,17 @@ type AddLocationInput = {
   address: string
   type: LocationType
   metadata?: LocationMetadata
+}
+
+const locationSelect = {
+  id: arrathonLocation.id,
+  locationId: locations.id,
+  name: locations.name,
+  address: locations.address,
+  type: arrathonLocation.type,
+  orderPosition: arrathonLocation.orderPosition,
+  metadata: arrathonLocation.metadata,
+  googleData: locations.googleData,
 }
 
 export async function addLocation(arrathonId: string, userId: string, input: AddLocationInput) {
@@ -75,16 +86,53 @@ export async function getLocations(arrathonId: string, userId: string) {
   if (!membership) throw new DomainError('FORBIDDEN', 403, 'Not a member')
 
   return db
-    .select({
-      id: arrathonLocation.id,
-      locationId: locations.id,
-      name: locations.name,
-      address: locations.address,
-      type: arrathonLocation.type,
-      orderPosition: arrathonLocation.orderPosition,
-    })
+    .select(locationSelect)
     .from(arrathonLocation)
     .innerJoin(locations, eq(arrathonLocation.locationId, locations.id))
     .where(eq(arrathonLocation.arrathonId, arrathonId))
     .orderBy(arrathonLocation.orderPosition)
+}
+
+export async function getLocation(arrathonId: string, locationId: string, userId: string) {
+  const [membership] = await db
+    .select()
+    .from(userArrathon)
+    .where(and(eq(userArrathon.arrathonId, arrathonId), eq(userArrathon.userId, userId)))
+
+  if (!membership) throw new DomainError('FORBIDDEN', 403, 'Not a member')
+
+  const [result] = await db
+    .select(locationSelect)
+    .from(arrathonLocation)
+    .innerJoin(locations, eq(arrathonLocation.locationId, locations.id))
+    .where(and(eq(arrathonLocation.arrathonId, arrathonId), eq(arrathonLocation.id, locationId)))
+    .limit(1)
+
+  if (!result) throw new DomainError('NOT_FOUND', 404, 'Location not found')
+  return result
+}
+
+export async function updateLocationMetadata(
+  arrathonId: string,
+  locationId: string,
+  userId: string,
+  metadata: LocationMetadata,
+) {
+  const [membership] = await db
+    .select()
+    .from(userArrathon)
+    .where(and(eq(userArrathon.arrathonId, arrathonId), eq(userArrathon.userId, userId)))
+
+  if (!membership || membership.role !== 'organisator') {
+    throw new DomainError('FORBIDDEN', 403, 'Only organisers can edit locations')
+  }
+
+  const [updated] = await db
+    .update(arrathonLocation)
+    .set({ metadata })
+    .where(and(eq(arrathonLocation.id, locationId), eq(arrathonLocation.arrathonId, arrathonId)))
+    .returning()
+
+  if (!updated) throw new DomainError('NOT_FOUND', 404, 'Location not found')
+  return updated
 }

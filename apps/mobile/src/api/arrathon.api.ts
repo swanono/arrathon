@@ -128,6 +128,25 @@ export type Participant = {
   role: 'organisator' | 'participant'
 }
 
+export async function getLocation(arrathonId: string, locationId: string): Promise<ArrathonLocation> {
+  const res = await apiFetch(`/arrathons/${arrathonId}/locations/${locationId}`)
+  if (!res.ok) throw new Error('Failed to fetch location')
+  const json = await res.json() as { data: ArrathonLocation }
+  return json.data
+}
+
+export async function updateLocationMetadata(
+  arrathonId: string,
+  locationId: string,
+  metadata: LocationMetadata,
+): Promise<void> {
+  const res = await apiFetch(`/arrathons/${arrathonId}/locations/${locationId}`, {
+    method: 'PATCH',
+    body: JSON.stringify({ metadata }),
+  })
+  if (!res.ok) throw new Error('Failed to update location')
+}
+
 export async function getParticipants(arrathonId: string): Promise<Participant[]> {
   const res = await apiFetch(`/arrathons/${arrathonId}/participants`)
   if (!res.ok) throw new Error('Failed to fetch participants')

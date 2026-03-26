@@ -66,14 +66,14 @@ export default function ArrathonScreen() {
       ) : (
         <View style={styles.locationList}>
           {locations.map((loc) => (
-            <View key={loc.id} style={styles.locationRow}>
+            <Pressable key={loc.id} style={styles.locationRow} onPress={() => router.push(`/arrathon/${id}/location/${loc.id}`)}>
               <Text style={styles.locationIcon}>{LOCATION_TYPE_ICON[loc.type]}</Text>
               <View style={styles.locationInfo}>
                 <Text style={styles.locationName}>{loc.name}</Text>
                 {loc.address && <Text style={styles.locationAddress}>{loc.address}</Text>}
               </View>
               <Text style={styles.locationOrder}>#{loc.orderPosition}</Text>
-            </View>
+            </Pressable>
           ))}
         </View>
       )}
