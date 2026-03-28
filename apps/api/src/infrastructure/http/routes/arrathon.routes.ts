@@ -3,7 +3,7 @@ import { zValidator } from '@hono/zod-validator'
 import { z } from 'zod'
 import { authMiddleware } from '../middleware/auth.middleware'
 import { createArrathon, getMyArrathons, getArrathon, joinByToken, getParticipants } from '../../../application/arrathons/arrathon.service'
-import { addLocation, getLocations, getLocation, updateLocationMetadata } from '../../../application/locations/location.service'
+import { addLocation, getLocations, getLocation, updateLocationMetadata, updateLocationDetails, deleteLocation } from '../../../application/locations/location.service'
 
 type Variables = { userId: string }
 
@@ -90,5 +90,25 @@ arrathonRoutes.patch('/:id/locations/:locationId', zValidator('json', metadataSc
   const userId = c.get('userId')
   const { metadata } = c.req.valid('json')
   await updateLocationMetadata(c.req.param('id'), c.req.param('locationId'), userId, metadata)
+  return c.json({ data: { ok: true } })
+})
+
+const locationDetailsSchema = z.object({
+  googlePlaceId: z.string().min(1),
+  name: z.string().min(1),
+  address: z.string(),
+  type: z.enum(['bar', 'apartment', 'monument', 'pit_stand']),
+})
+
+arrathonRoutes.patch('/:id/locations/:locationId/details', zValidator('json', locationDetailsSchema), async (c) => {
+  const userId = c.get('userId')
+  const body = c.req.valid('json')
+  const updated = await updateLocationDetails(c.req.param('id'), c.req.param('locationId'), userId, body)
+  return c.json({ data: updated })
+})
+
+arrathonRoutes.delete('/:id/locations/:locationId', async (c) => {
+  const userId = c.get('userId')
+  await deleteLocation(c.req.param('id'), c.req.param('locationId'), userId)
   return c.json({ data: { ok: true } })
 })

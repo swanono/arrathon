@@ -64,6 +64,7 @@ export type ArrathonLocation = {
   orderPosition: number
   googleData?: GoogleData
   metadata?: LocationMetadata
+  userRole?: 'organisator' | 'participant'
 }
 
 export type PlaceSuggestion = {
@@ -126,6 +127,23 @@ export type Participant = {
   familyName: string
   avatarUrl: string | null
   role: 'organisator' | 'participant'
+}
+
+export async function updateLocationDetails(
+  arrathonId: string,
+  locationId: string,
+  input: { googlePlaceId: string; name: string; address: string; type: LocationType },
+): Promise<void> {
+  const res = await apiFetch(`/arrathons/${arrathonId}/locations/${locationId}/details`, {
+    method: 'PATCH',
+    body: JSON.stringify(input),
+  })
+  if (!res.ok) throw new Error('Failed to update location')
+}
+
+export async function deleteLocation(arrathonId: string, locationId: string): Promise<void> {
+  const res = await apiFetch(`/arrathons/${arrathonId}/locations/${locationId}`, { method: 'DELETE' })
+  if (!res.ok) throw new Error('Failed to delete location')
 }
 
 export async function getLocation(arrathonId: string, locationId: string): Promise<ArrathonLocation> {
