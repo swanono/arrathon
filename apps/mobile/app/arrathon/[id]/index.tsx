@@ -55,9 +55,16 @@ export default function ArrathonScreen() {
       <View style={styles.sectionHeader}>
         <Text style={styles.sectionTitle}>Lieux ({locations.length})</Text>
         {isOrganisator && (
-          <Pressable onPress={() => router.push(`/arrathon/${id}/add-location`)} style={styles.addButton}>
-            <Text style={styles.addButtonText}>+ Ajouter</Text>
-          </Pressable>
+          <View style={styles.sectionActions}>
+            {locations.length > 1 && (
+              <Pressable onPress={() => router.push(`/arrathon/${id}/reorder-locations`)} style={styles.reorderButton}>
+                <Text style={styles.reorderButtonText}>☰ Ordre</Text>
+              </Pressable>
+            )}
+            <Pressable onPress={() => router.push(`/arrathon/${id}/add-location`)} style={styles.addButton}>
+              <Text style={styles.addButtonText}>+ Ajouter</Text>
+            </Pressable>
+          </View>
         )}
       </View>
 
@@ -155,6 +162,21 @@ function makeStyles(theme: ReturnType<typeof useTheme>) {
     participantsSectionTitle: {
       marginTop: theme.spacing.xl,
       marginBottom: theme.spacing.md,
+    },
+    sectionActions: {
+      flexDirection: 'row',
+      gap: theme.spacing.sm,
+    },
+    reorderButton: {
+      backgroundColor: theme.colors.surface,
+      paddingVertical: theme.spacing.xs,
+      paddingHorizontal: theme.spacing.md,
+      borderRadius: theme.borderRadius.sm,
+    },
+    reorderButtonText: {
+      color: theme.colors.navy,
+      fontSize: theme.typography.size.sm,
+      fontWeight: theme.typography.weight.medium,
     },
     addButton: {
       backgroundColor: theme.colors.primary,

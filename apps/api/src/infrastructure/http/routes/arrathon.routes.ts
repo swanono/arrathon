@@ -3,7 +3,7 @@ import { zValidator } from '@hono/zod-validator'
 import { z } from 'zod'
 import { authMiddleware } from '../middleware/auth.middleware'
 import { createArrathon, getMyArrathons, getArrathon, joinByToken, getParticipants } from '../../../application/arrathons/arrathon.service'
-import { addLocation, getLocations, getLocation, updateLocationMetadata, updateLocationDetails, deleteLocation } from '../../../application/locations/location.service'
+import { addLocation, getLocations, getLocation, updateLocationMetadata, updateLocationDetails, deleteLocation, reorderLocations } from '../../../application/locations/location.service'
 
 type Variables = { userId: string }
 
@@ -70,6 +70,20 @@ arrathonRoutes.post('/:id/locations', zValidator('json', locationSchema), async 
   const body = c.req.valid('json')
   const location = await addLocation(c.req.param('id'), userId, body)
   return c.json({ data: location }, 201)
+})
+
+const reorderSchema = z.object({
+  order: z.array(z.object({
+    id: z.string().uuid(),
+    orderPosition: z.number().int().positive(),
+  })).min(1),
+})
+
+arrathonRoutes.patch('/:id/locations/reorder', zValidator('json', reorderSchema), async (c) => {
+  const userId = c.get('userId')
+  const { order } = c.req.valid('json')
+  await reorderLocations(c.req.param('id'), userId, order)
+  return c.json({ data: { ok: true } })
 })
 
 arrathonRoutes.get('/:id/locations/:locationId', async (c) => {

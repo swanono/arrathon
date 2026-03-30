@@ -1,4 +1,4 @@
-import { eq, max, and, gt, sql } from 'drizzle-orm'
+import { eq, max, and, gt, sql, inArray } from 'drizzle-orm'
 import { db, locations, arrathonLocation, userArrathon } from '@arrathon/db'
 import { DomainError } from '../../domain/errors/domain-error'
 
@@ -208,4 +208,39 @@ export async function deleteLocation(arrathonId: string, locationId: string, use
       eq(arrathonLocation.arrathonId, arrathonId),
       gt(arrathonLocation.orderPosition, entry.orderPosition),
     ))
+}
+
+export async function reorderLocations(
+  arrathonId: string,
+  userId: string,
+  order: { id: string; orderPosition: number }[],
+) {
+  const [membership] = await db
+    .select()
+    .from(userArrathon)
+    .where(and(eq(userArrathon.arrathonId, arrathonId), eq(userArrathon.userId, userId)))
+
+  if (!membership || membership.role !== 'organisator') {
+    throw new DomainError('FORBIDDEN', 403, 'Only organisers can reorder locations')
+  }
+
+  const ids = order.map((o) => o.id)
+  const existing = await db
+    .select({ id: arrathonLocation.id })
+    .from(arrathonLocation)
+    .where(and(eq(arrathonLocation.arrathonId, arrathonId), inArray(arrathonLocation.id, ids)))
+
+  if (existing.length !== ids.length) {
+    throw new DomainError('BAD_REQUEST', 400, 'Invalid location ids')
+  }
+
+  const caseWhen = sql`CASE ${arrathonLocation.id} ${sql.join(
+    order.map(({ id, orderPosition }) => sql`WHEN ${id}::uuid THEN ${orderPosition}`),
+    sql` `,
+  )} ELSE ${arrathonLocation.orderPosition} END`
+
+  await db
+    .update(arrathonLocation)
+    .set({ orderPosition: caseWhen })
+    .where(and(eq(arrathonLocation.arrathonId, arrathonId), inArray(arrathonLocation.id, ids)))
 }

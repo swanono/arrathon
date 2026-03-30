@@ -165,6 +165,17 @@ export async function updateLocationMetadata(
   if (!res.ok) throw new Error('Failed to update location')
 }
 
+export async function reorderLocations(
+  arrathonId: string,
+  order: { id: string; orderPosition: number }[],
+): Promise<void> {
+  const res = await apiFetch(`/arrathons/${arrathonId}/locations/reorder`, {
+    method: 'PATCH',
+    body: JSON.stringify({ order }),
+  })
+  if (!res.ok) throw new Error('Failed to reorder locations')
+}
+
 export async function getParticipants(arrathonId: string): Promise<Participant[]> {
   const res = await apiFetch(`/arrathons/${arrathonId}/participants`)
   if (!res.ok) throw new Error('Failed to fetch participants')
