@@ -1,6 +1,6 @@
 # Story 4.5: Inline Reorder (Dashboard FlatList Refactor)
 
-Status: todo
+Status: done
 
 ## Story
 
